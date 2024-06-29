@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import auth
 import helper.user_auth as mAuth
 
-cred = firebase_admin.credentials.Certificate('./misc/service.json')
+cred = firebase_admin.credentials.Certificate('service.json')
 
 firebase_admin.initialize_app(cred, {
   'databaseURL': "https://exalearn-77758-default-rtdb.asia-southeast1.firebasedatabase.app"
