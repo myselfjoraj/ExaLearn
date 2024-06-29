@@ -7,7 +7,7 @@ class MailSender:
     @staticmethod
     def send_email(subject, body, to_email):
         try:
-            yag = yagmail.SMTP(get_smtp_email(), get_smtp_password())
+            yag = yagmail.SMTP(to_email=get_smtp_email(), password=get_smtp_password())
             yag.send(to=to_email, subject=subject, contents=body)
             return ErrorControl(True, "Email Send Successfully!")
         except Exception as e:

@@ -2,27 +2,18 @@ from flask import *
 import firebase_admin
 from firebase_admin import auth
 import helper.user_auth as mAuth
+from auth.login_system import LoginSystem
+
+app = Flask(__name__)
 
 cred = firebase_admin.credentials.Certificate('service.json')
 
 firebase_admin.initialize_app(cred, {
-  'databaseURL': "https://exalearn-77758-default-rtdb.asia-southeast1.firebasedatabase.app"
+    'databaseURL': "https://exalearn-77758-default-rtdb.asia-southeast1.firebasedatabase.app"
 })
 
+a = LoginSystem.register_user("jorajjayan2020e@gmail.com", "aabccddeeee")
+print(a.message)
 
-# user = auth.create_user(
-#     email='user@example.com',
-#     email_verified=False,
-#     phone_number='+918086786159',
-#     password='password',
-#     display_name='John Doe',
-#     photo_url='https://buffer.com/library/content/images/size/w1200/2023/10/free-images.jpg',
-#     disabled=False
-# )
-
-ab = mAuth.create_user("joraj2net@gmail.com","aabccddeeee")
-print(ab)
-c = auth.generate_email_verification_link("jorajonline@gmail.com")
-print(str(c))
-# print('Successfully created new user: {0}'.format(user.uid))
-# Get a reference to the database
+if __name__ == "__main__":
+    app.run(debug=True)
