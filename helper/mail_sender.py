@@ -1,6 +1,6 @@
 import yagmail
 from misc.constants import *
-from models.ErrorControl import ErrorControl
+from models.error_control import ErrorControl
 
 
 class MailSender:

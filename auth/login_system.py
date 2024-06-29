@@ -2,7 +2,7 @@ from helper.mail_sender import MailSender
 from helper.user_auth import *
 from flask import request
 
-from models.ErrorControl import ErrorControl
+from models.error_control import ErrorControl
 
 
 class LoginSystem:
