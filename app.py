@@ -20,7 +20,9 @@ firebase_admin.initialize_app(cred, {
 #     disabled=False
 # )
 
-ab = mAuth.create_user("hi2oo@email.com","aabccddeeee")
+ab = mAuth.create_user("joraj2net@gmail.com","aabccddeeee")
 print(ab)
+c = auth.generate_email_verification_link("jorajonline@gmail.com")
+print(str(c))
 # print('Successfully created new user: {0}'.format(user.uid))
 # Get a reference to the database

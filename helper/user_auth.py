@@ -1,13 +1,16 @@
 from firebase_admin import auth
 from models.user import User
 
+
 def create_user(email, password):
     try:
         user = auth.create_user(
             email=email,
-            password=password
+            password=password,
+            email_verified=False
         )
-        return User(user.uid, user.email, user.display_name, user.phone_number, user.photo_url), None
+        print(user.uid)
+        return None
     except Exception as e:
         return str(e)
 
