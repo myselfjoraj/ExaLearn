@@ -1,19 +1,19 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv,dotenv_values
 
 load_dotenv()
 
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-DB_URL = os.getenv('SECRET_KEY')"https://exalearn-77758-default-rtdb.asia-southeast1.firebasedatabase.app"
+DB_URL = os.getenv('DB_URL')
 
-STORAGE_URL = "https://exalearn-77758.appspot.com"
+STORAGE_URL = os.getenv('STORAGE_URL')
 
-SMTP_EMAIL = "jorajexatech@gmail.com"
+SMTP_EMAIL = os.getenv('SMTP_EMAIL')
 
-SMTP_PASS = "uohvwxyvskxgrilr"
+SMTP_PASS = os.getenv('SMTP_PASS')
 
-SMTP_SERVER = "smtp.gmail.com"
+SMTP_SERVER = os.getenv('SMTP_SERVER')
 
-SMTP_PORT = 587
-
+SMTP_PORT = os.getenv('SMTP_PORT')
 
