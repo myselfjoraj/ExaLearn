@@ -1,5 +1,7 @@
+import firebase_admin.exceptions
 from firebase_admin import auth
 from models.user import User
+from misc.constants import *
 
 
 def create_user(email, password):
@@ -11,6 +13,8 @@ def create_user(email, password):
         )
         print(user.uid)
         return None
+    except firebase_admin.exceptions.AlreadyExistsError as a:
+        return EMAIL_EXISTS
     except Exception as e:
         return str(e)
 
@@ -18,7 +22,7 @@ def create_user(email, password):
 def get_user(uid):
     try:
         user = auth.get_user(uid)
-        return User(user.uid, user.email)
+        return User(uid=user.uid, email=user.email)
     except Exception as e:
         return str(e)
 

@@ -13,7 +13,7 @@ class LoginSystem:
         if email is not None and password is not None:
             cr = create_user(email, password)
             if cr is None:
-                LoginSystem.send_verification(email)
+                #LoginSystem.send_verification(email)
                 return ErrorControl(True, "user created successfully!")
             else:
                 return ErrorControl(False, cr)
