@@ -3,7 +3,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from misc.constants import *
 from misc.cred import *
-from models.error_control import ErrorControl
+from models.except_control import ExceptControl
 
 
 class MailSender:
@@ -27,6 +27,6 @@ class MailSender:
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, recipient, msg.as_string())
             server.quit()
-            return ErrorControl(True, f"Email sent to {recipient}")
+            return ExceptControl(True, f"Email sent to {recipient}")
         except Exception as e:
-            return ErrorControl(False, str(e))
+            return ExceptControl(False, str(e))

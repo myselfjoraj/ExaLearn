@@ -3,7 +3,7 @@ from helper.user_auth import *
 from flask import request, render_template_string, render_template
 
 from misc import email_verify
-from models.error_control import ErrorControl
+from models.except_control import ExceptControl
 
 
 class LoginSystem:
@@ -14,9 +14,9 @@ class LoginSystem:
             cr = create_user(email, password)
             if cr is None:
                 #LoginSystem.send_verification(email)
-                return ErrorControl(True, "user created successfully!")
+                return ExceptControl(True, "user created successfully!")
             else:
-                return ErrorControl(False, cr)
+                return ExceptControl(False, cr)
 
     @staticmethod
     def send_verification(email):

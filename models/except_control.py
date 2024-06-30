@@ -1,4 +1,4 @@
-class ErrorControl:
+class ExceptControl:
 
     def __init__(self,success,message):
         self.success = success
