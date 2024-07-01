@@ -16,7 +16,7 @@ firebase_admin.initialize_app(cred, {
     'storageURL': mKey.STORAGE_URL
 })
 
-a = LoginSystem.register_user("joraj2net@gmail.com", "aabccddeeee")
+a = LoginSystem.register_user("nekhaexatech@gmail.com", "aabccddeeee")
 print(str(a.success) + " " + a.message)
 
 if __name__ == "__main__":
