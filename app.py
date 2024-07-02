@@ -25,15 +25,44 @@ firebase_admin.initialize_app(cred, {
     'storageURL': mKey.STORAGE_URL
 })
 
-u = User(str("jorajonline@gmail.com").replace(".", "_-"), "Joraj@01", "Joraj J R", False, 12345, 80878159)
-
-ab = LoginSystem(db).login_user(encode_email("jorajonline@gmail.com"),"Joraj@01")
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login_page'
 
-print(ab.message)
-usr = ab.message
+
+@app.route("/reg")
+def reg():
+    ab = LoginSystem(db).login_user(encode_email("jorajonline@gmail.com"), "Joraj@01")
+    print(ab.message)
+    usr = ab.message
+    with app.app_context():
+        login_user(usr)
+    return "reg"
+
+
+@app.route("/login")
+def login_page():
+    return "login page"
+
+
+@app.route("/")
+@login_required
+def index_page():
+    return "index page"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if 'user_dict' in session:
+        user = User.from_dict(session['user_dict'])
+        if user.email == user_id:
+            return user
+        else:
+            session.pop('user_dict')
+            return None
+    return None
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    with app.app_context():
+        app.run(debug=True)

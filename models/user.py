@@ -32,3 +32,9 @@ class User(UserMixin):
         for key, value in user_dict.items():
             setattr(user, key, value)
         return user
+
+    def get_id(self):
+        return self.email  # Return the email as the unique identifier
+
+    def __repr__(self):
+        return f"<User {self.email}>"

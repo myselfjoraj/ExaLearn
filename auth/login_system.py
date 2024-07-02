@@ -1,4 +1,5 @@
 import requests
+from flask import session
 
 from helper.mail_sender import MailSender
 
@@ -9,6 +10,7 @@ from models.except_control import ExceptControl
 from dao.user_dao import UserDAO
 from models.user import User
 from helper.crypt_helper import Crypt
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 
 
 class LoginSystem:
@@ -31,12 +33,13 @@ class LoginSystem:
             if not self.dao.user_exists(email):
                 return ExceptControl(False, USER_NOT_EXISTS)
             else:
-                user = User.from_dict(self.dao.retrieve_user(email))
+                user_dict = self.dao.retrieve_user(email)
+                user = User.from_dict(user_dict)
                 if user and self.crypt.encrypt(password) == user.password:
+                    session['user_dict'] = user_dict
                     return ExceptControl(True, user)
                 else:
                     return ExceptControl(False, PASSWORD_ERROR)
-
 
     @staticmethod
     def send_verification(email, otp):
@@ -47,4 +50,5 @@ class LoginSystem:
             print(ms.message)
         except Exception as e:
             print(e)
+
 
