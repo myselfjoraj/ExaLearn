@@ -1,9 +1,10 @@
 from flask import *
 import firebase_admin
-from firebase_admin import auth
-import helper.user_auth as mAuth
+from firebase_admin import auth,db
+
 from auth.login_system import LoginSystem
 import misc.cred as mKey
+from helper.firebase_helper import FirebaseHelper
 
 app = Flask(__name__)
 
@@ -16,8 +17,8 @@ firebase_admin.initialize_app(cred, {
     'storageURL': mKey.STORAGE_URL
 })
 
-a = LoginSystem.register_user("nekhaexatech@gmail.com", "aabccddeeee")
-print(str(a.success) + " " + a.message)
+
+FirebaseHelper(db).check_child_exists("/users")
 
 if __name__ == "__main__":
     app.run(debug=True)

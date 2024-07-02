@@ -5,6 +5,10 @@ load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+SALT_KEY = os.getenv('SALT_KEY')
+
+CRYPT_KEY = os.getenv('CRYPT_KEY')
+
 DB_URL = os.getenv('DB_URL')
 
 STORAGE_URL = os.getenv('STORAGE_URL')
@@ -16,4 +20,7 @@ SMTP_PASS = os.getenv('SMTP_PASS')
 SMTP_SERVER = os.getenv('SMTP_SERVER')
 
 SMTP_PORT = os.getenv('SMTP_PORT')
+
+
+
 

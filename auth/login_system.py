@@ -1,31 +1,36 @@
+import requests
+
 from helper.mail_sender import MailSender
-from helper.user_auth import *
-from flask import request, render_template_string, render_template
+
+from misc.constants import *
 
 from misc import email_verify
 from models.except_control import ExceptControl
+from dao.user_dao import UserDAO
+from models.user import User
 
 
 class LoginSystem:
 
-    @staticmethod
-    def register_user(email, password):
-        if email is not None and password is not None:
-            cr = create_user(email, password)
-            if cr is None:
-                #TO-DO : un-comment the verification
-                #LoginSystem.send_verification(email)
-                return ExceptControl(True, "user created successfully!")
+    def __init__(self, db):
+        self.dao = UserDAO(db)
+
+    def register_user(self, user):
+        if user.email is not None and user.password is not None:
+            if self.dao.user_exists(user.email):
+                return ExceptControl(False, EMAIL_EXISTS)
             else:
-                return ExceptControl(False, cr)
+                self.dao.create_user(user)
+                LoginSystem.send_verification(user.email, user.email_otp)
+                return ExceptControl(True, SUCCESS)
 
     @staticmethod
-    def send_verification(email):
+    def send_verification(email, otp):
         try:
-            link = auth.generate_email_verification_link(email)
             subject = "ExaLearn email verification"
-            body = email_verify.get(link)
+            body = email_verify.get(otp)
             ms = MailSender.send_email(subject, body, email)
             print(ms.message)
         except Exception as e:
             print(e)
+
