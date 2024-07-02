@@ -44,7 +44,7 @@ def reg():
 @app.route("/register")
 def register_page():
     if current_user.is_authenticated:
-        return "authenticated"
+        return f"authenticated - {current_user.email_verified}"
     return "register page"
 
 
