@@ -1,21 +1,13 @@
-import urllib.parse
-
 from flask import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import firebase_admin
-from firebase_admin import auth, db
-
-from helper.crypt_helper import Crypt
+from firebase_admin import db
 from models.user import User
-from dao.user_dao import UserDAO
-
 from auth.login_system import LoginSystem
 import misc.cred as mKey
-from helper.firebase_helper import FirebaseHelper
 from misc.extras import *
 
 app = Flask(__name__)
-
 app.secret_key = mKey.SECRET_KEY
 
 cred = firebase_admin.credentials.Certificate('cloud_key.json')
@@ -25,6 +17,7 @@ firebase_admin.initialize_app(cred, {
     'storageURL': mKey.STORAGE_URL
 })
 
+#login manager initialization
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_page'
