@@ -17,7 +17,7 @@ firebase_admin.initialize_app(cred, {
     'storageURL': mKey.STORAGE_URL
 })
 
-#login manager initialization
+# login manager initialization
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login_page'
@@ -60,7 +60,7 @@ def dashboard_page():
     return "dashboard page"
 
 
-#user logout
+# user logout
 @app.route('/logout')
 @login_required
 def logout():
@@ -80,6 +80,21 @@ def load_user(user_id):
             session.pop('user_dict')
             return None
     return None
+
+
+#######################################################################################################################
+
+''' ADMIN LINKS'''
+
+
+@app.route("/admin")
+def admin_login():
+    return render_template('admin-login.html')
+
+
+@app.route("/admin/dashboard")
+def admin_dash():
+    return render_template('admin-dash.html')
 
 
 if __name__ == "__main__":
