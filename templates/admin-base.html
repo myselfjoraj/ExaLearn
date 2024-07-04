@@ -53,13 +53,158 @@
 
     <body class="layout-boxed ">
 
+    <div class="preloader">
+            <div class="sk-chase">
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+                <div class="sk-chase-dot"></div>
+            </div>
+
+    </div>
+
+        <!-- Drawer Layout -->
+
+        <div class="mdk-drawer-layout js-mdk-drawer-layout"
+             data-push
+             data-responsive-width="992px">
+            <div class="mdk-drawer-layout__content page-content">
+
+                <!-- Header -->
+
+                <!-- Navbar -->
+
+                <div class="navbar navbar-expand pr-0 navbar-dark navbar-dark-pickled-bluewood navbar-shadow"
+                     id="default-navbar"
+                     data-primary>
+
+                    <!-- Navbar Toggler -->
+
+                    <button class="navbar-toggler w-auto mr-16pt d-block d-lg-none rounded-0"
+                            type="button"
+                            data-toggle="sidebar">
+                        <span class="material-icons">short_text</span>
+                    </button>
+
+                    <!-- // END Navbar Toggler -->
+
+                    <!-- Navbar Brand -->
+
+                    <a href="index.html"
+                       class="navbar-brand mr-16pt d-lg-none">
+
+                        <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
+
+                            <span class="avatar-title rounded bg-primary"><img src="static/images/illustration/student/128/white.svg"
+                                     alt="logo"
+                                     class="img-fluid" /></span>
+
+                        </span>
+
+                        <span class="d-none d-lg-block">ExaLearn</span>
+                    </a>
+
+                    <!-- // END Navbar Brand -->
+
+                    <span class="d-none d-md-flex align-items-center mr-16pt">
+
+                        <span class="avatar avatar-sm mr-12pt">
+
+                            <span class="avatar-title rounded navbar-avatar"><i class="material-icons">trending_up</i></span>
+
+                        </span>
+
+                        <small class="flex d-flex flex-column">
+                            <strong class="navbar-text-100">Enrollments</strong>
+                            <span class="navbar-text-50">12.3k</span>
+                        </small>
+                    </span>
+                    <span class="d-none d-md-flex align-items-center mr-16pt">
+
+                        <span class="avatar avatar-sm mr-12pt">
+
+                            <span class="avatar-title rounded navbar-avatar"><i class="material-icons">receipt</i></span>
+
+                        </span>
+
+                        <small class="flex d-flex flex-column">
+                            <strong class="navbar-text-100">Courses</strong>
+                            <span class="navbar-text-50">264</span>
+                        </small>
+                    </span>
+
+
+                    <div class="flex"></div>
+
+                    <!-- Navbar Menu -->
+
+                    <div class="nav navbar-nav flex-nowrap d-flex mr-16pt">
+
+                        <div class="nav-item dropdown">
+                            <a href="#"
+                               class="nav-link d-flex align-items-center dropdown-toggle"
+                               data-toggle="dropdown"
+                               data-caret="false">
+
+                                <span class="avatar avatar-sm mr-8pt2">
+
+                                    <span class="avatar-title rounded-circle bg-primary"><i class="material-icons">account_box</i></span>
+
+                                </span>
+
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <div class="dropdown-header"><strong>Account</strong></div>
+                                <a class="dropdown-item"
+                                   href="edit-account.html">Edit Account</a>
+                                <a class="dropdown-item"
+                                   href="login.html">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- // END Navbar Menu -->
+
+                </div>
+
+                <!-- // END Navbar -->
+
+                <!-- // END Header -->
+            </div>
+
 
     {% block content %}
 
 
     {% endblock %}
 
+            </div>
 
+    <!-- // END Drawer Layout -->
+
+        <!-- jQuery -->
+        <script src="/static/vendor/jquery.min.js"></script>
+
+        <!-- Bootstrap -->
+        <script src="/static/vendor/popper.min.js"></script>
+        <script src="/static/vendor/bootstrap.min.js"></script>
+
+        <!-- Perfect Scrollbar -->
+        <script src="/static/vendor/perfect-scrollbar.min.js"></script>
+
+        <!-- DOM Factory -->
+        <script src="/static/vendor/dom-factory.js"></script>
+
+        <!-- MDK -->
+        <script src="/static/vendor/material-design-kit.js"></script>
+
+        <!-- App JS -->
+        <script src="/static/js/app.js"></script>
+
+        <!-- Preloader -->
+        <script src="/static/js/preloader.js"></script>
 
     </body>
 </html>
