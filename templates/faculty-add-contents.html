@@ -1,0 +1,133 @@
+{%extends "faculty-base.html" %}
+
+
+{%block content%}
+
+{% block header %}
+<h1 hidden="hidden"> {% block title %} Add Contents {% endblock %} </h1>
+{% endblock %}
+
+
+<div class="pt-32pt">
+    <div class="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
+        <div class="flex d-flex flex-column flex-sm-row align-items-center">
+
+            <div class="mb-24pt mb-sm-0 mr-sm-24pt">
+                <h2 class="mb-0">Add / Edit Section</h2>
+
+                <ol class="breadcrumb p-0 m-0">
+                    <li class="breadcrumb-item"><a href="index.html">Course id</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">snjijswnojwnsojwsnwoijs</a></li>
+
+                    <li class="breadcrumb-item active">
+
+                        sec1
+
+                    </li>
+
+                </ol>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="page-section">
+    <div class="container-fluid page__container">
+
+        <div class="row">
+            <div class="col-md-8">
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Basic information</div>
+                </div>
+
+                <label class="form-label">Section title</label>
+                <div class="form-group mb-24pt">
+                    <input type="text"
+                           class="form-control form-control-lg"
+                           placeholder="Course title"
+                           value="Angular Fundamentals">
+                </div>
+
+                <div class="form-group mb-32pt">
+                    <label class="form-label">Description</label>
+                    <!-- <textarea class="form-control" rows="3" placeholder="Course description"></textarea> -->
+                    <div style="height: 150px;"
+                         class="mb-0"
+                         data-toggle="quill"
+                         data-quill-placeholder="Course description">
+                        <h1>Hello World!</h1>
+                        <p>Some initial <strong>bold</strong> text</p>
+                        <p><br></p>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-md-4">
+
+                <div class="card">
+                    <div class="card-header text-center">
+                        <a href="#"
+                           class="btn btn-accent">Save Content</a>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item">
+                            <a href="#" onClick="history.go(-1); return false;"
+                               class="text-danger"><strong>Cancel</strong></a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Video</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <label class="form-label">Attach Video</label>
+                        <input type="file" accept="video/*"/>
+                        <small class="form-text text-muted">Upload a valid video File.</small>
+                    </div>
+                </div>
+
+
+                <div class="page-separator">
+                    <div class="page-separator__text">Options</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+
+
+                        <div class="form-group">
+                            <label class="form-label">Duration</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="input-group form-inline">
+                                        <span class="input-group-prepend"><span
+                                                class="input-group-text">Min</span></span>
+                                        <input type="text"
+                                               class="form-control"
+                                               value="24">
+                                    </div>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Enter the time required for completion</small>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

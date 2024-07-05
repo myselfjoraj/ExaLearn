@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en"
+      dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ExaLearn | {% block title %} {% endblock %}</title>
+
+    <!-- Prevent the demo from appearing in search engines -->
+    <meta name="robots"
+          content="noindex">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css8f03.css?family=Lato:400,700%7CRoboto:400,500%7CExo+2:600&amp;display=swap"
+          rel="stylesheet">
+
+    <!-- Preloader -->
+    <link type="text/css"
+          href="/static/vendor/spinkit.css"
+          rel="stylesheet">
+
+    <!-- Perfect Scrollbar -->
+    <link type="text/css"
+          href="/static/vendor/perfect-scrollbar.css"
+          rel="stylesheet">
+
+    <!-- Material Design Icons -->
+    <link type="text/css"
+          href="/static/css/material-icons.css"
+          rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link type="text/css"
+          href="/static/css/fontawesome.css"
+          rel="stylesheet">
+
+    <!-- Preloader -->
+    <link type="text/css"
+          href="/static/css/preloader.css"
+          rel="stylesheet">
+
+    <!-- App CSS -->
+    <link type="text/css"
+          href="/static/css/app.css"
+          rel="stylesheet">
+
+
+    <!-- My CSS -->
+    <link type="text/css"
+          href="/static/css/custom.css"
+          rel="stylesheet">
+
+    <!-- Quill Theme -->
+    <link type="text/css"
+          href="/static/css/quill.css"
+          rel="stylesheet">
+    <!-- Select2 -->
+    <link type="text/css"
+          href="/static/vendor/select2/select2.min.css"
+          rel="stylesheet">
+    <link type="text/css"
+          href="/static/css/select2.css"
+          rel="stylesheet">
+
+</head>
+
+<body class="layout-boxed ">
+
+<div class="preloader">
+    <div class="sk-chase">
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+        <div class="sk-chase-dot"></div>
+    </div>
+
+</div>
+
+<!-- Drawer Layout -->
+
+<div class="mdk-drawer-layout js-mdk-drawer-layout"
+     data-push
+     data-responsive-width="992px">
+    <div class="mdk-drawer-layout__content page-content">
+
+        <!-- Header -->
+
+        <!-- Navbar -->
+
+        <div class="navbar navbar-expand pr-0 navbar-dark navbar-dark-pickled-bluewood navbar-shadow"
+             id="default-navbar"
+             data-primary>
+
+            <!-- Navbar Toggler -->
+
+            <button class="navbar-toggler w-auto mr-16pt d-block d-lg-none rounded-0"
+                    type="button"
+                    data-toggle="sidebar">
+                <span class="material-icons">short_text</span>
+            </button>
+
+            <!-- // END Navbar Toggler -->
+
+            <!-- Navbar Brand -->
+
+            <a href="index.html"
+               class="navbar-brand mr-16pt d-lg-none">
+
+                        <span class="avatar avatar-sm navbar-brand-icon mr-0 mr-lg-8pt">
+
+                            <span class="avatar-title rounded bg-primary"><img
+                                    src="static/images/illustration/student/128/white.svg"
+                                    alt="logo"
+                                    class="img-fluid"/></span>
+
+                        </span>
+
+                <span class="d-none d-lg-block">ExaLearn</span>
+            </a>
+
+            <!-- // END Navbar Brand -->
+
+            <span class="d-none d-md-flex align-items-center mr-16pt">
+
+                        <span class="avatar avatar-sm mr-12pt">
+
+                            <span class="avatar-title rounded navbar-avatar"><i
+                                    class="material-icons">trending_up</i></span>
+
+                        </span>
+
+                        <small class="flex d-flex flex-column">
+                            <strong class="navbar-text-100">Enrollments</strong>
+                            <span class="navbar-text-50">12.3k</span>
+                        </small>
+                    </span>
+            <span class="d-none d-md-flex align-items-center mr-16pt">
+
+                        <span class="avatar avatar-sm mr-12pt">
+
+                            <span class="avatar-title rounded navbar-avatar"><i
+                                    class="material-icons">receipt</i></span>
+
+                        </span>
+
+                        <small class="flex d-flex flex-column">
+                            <strong class="navbar-text-100">Courses</strong>
+                            <span class="navbar-text-50">264</span>
+                        </small>
+                    </span>
+
+
+            <div class="flex"></div>
+
+            <!-- Navbar Menu -->
+
+            <div class="nav navbar-nav flex-nowrap d-flex mr-16pt">
+
+                <div class="nav-item dropdown">
+                    <a href="#"
+                       class="nav-link d-flex align-items-center dropdown-toggle"
+                       data-toggle="dropdown"
+                       data-caret="false">
+
+                                <span class="avatar avatar-sm mr-8pt2">
+
+                                    <span class="avatar-title rounded-circle bg-primary"><i class="material-icons">account_box</i></span>
+
+                                </span>
+
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <div class="dropdown-header"><strong>Account</strong></div>
+                        <a class="dropdown-item"
+                           href="edit-account.html">Edit Account</a>
+                        <a class="dropdown-item"
+                           href="login.html">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- // END Navbar Menu -->
+
+        </div>
+
+        <!-- // END Navbar -->
+
+        <!-- // END Header -->
+
+
+        {% block content %}
+
+
+        {% endblock %}
+    </div>
+
+    <!-- Drawer -->
+
+    <div class="mdk-drawer js-mdk-drawer"
+         id="default-drawer">
+        <div class="mdk-drawer__content">
+            <div class="sidebar sidebar-light sidebar-light-dodger-blue sidebar-left"
+                 data-perfect-scrollbar>
+
+                <!-- Sidebar Content -->
+
+                <a href="index.html"
+                   class="sidebar-brand sidebar-brand-dark bg-primary-pickled-bluewood">
+
+                            <span class="avatar avatar-xl sidebar-brand-icon h-auto">
+
+                                <span class="avatar-title rounded bg-primary"><img
+                                        src="../static/images/illustration/student/128/white.svg"
+                                        class="img-fluid"
+                                        alt="logo"/></span>
+
+                            </span>
+
+                    <span>ExaLearn</span>
+                </a>
+
+                <div class="sidebar-heading">Faculty Dashboard</div>
+                <ul class="sidebar-menu">
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_dash') }}">
+                            Overview
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_course') }}">
+                            Courses
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_quiz') }}">
+                            Quiz
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_stud') }}">
+                            Students
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_leaderboard') }}">
+                            Leaderboard
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+
+                           href="{{ url_for('faculty_community') }}">
+                            Community
+                        </a>
+                    </li>
+
+                    <li class="sidebar-menu-item">
+                        <a class="sidebar-menu-button js-sidebar-collapse"
+                           href="{{ url_for('faculty_gpt') }}">
+                            ExaLearn GPT
+                        </a>
+                    </li>
+                </ul>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- // END Drawer -->
+
+</div>
+
+<!-- // END Drawer Layout -->
+
+<!-- jQuery -->
+<script src="/static/vendor/jquery.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="/static/vendor/popper.min.js"></script>
+<script src="/static/vendor/bootstrap.min.js"></script>
+
+<!-- Perfect Scrollbar -->
+<script src="/static/vendor/perfect-scrollbar.min.js"></script>
+
+<!-- DOM Factory -->
+<script src="/static/vendor/dom-factory.js"></script>
+
+<!-- MDK -->
+<script src="/static/vendor/material-design-kit.js"></script>
+
+<!-- App JS -->
+<script src="/static/js/app.js"></script>
+
+<!-- Preloader -->
+<script src="/static/js/preloader.js"></script>
+
+<!-- Quill -->
+<script src="/static/vendor/quill.min.js"></script>
+<script src="/static/js/quill.js"></script>
+<!-- Select2 -->
+<script src="/static/vendor/select2/select2.min.js"></script>
+<script src="/static/js/select2.js"></script>
+
+
+</body>
+</html>

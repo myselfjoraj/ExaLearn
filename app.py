@@ -84,17 +84,90 @@ def load_user(user_id):
 
 #######################################################################################################################
 
-''' ADMIN LINKS'''
+''' FACULTY LINKS'''
 
 
-@app.route("/admin")
-def admin_login():
+@app.route("/faculty")
+def faculty_login():
     return render_template('admin-login.html')
 
 
-@app.route("/admin/dashboard")
-def admin_dash():
-    return render_template('admin-dashboard.html')
+@app.route("/faculty/profile")
+def faculty_profile():
+    return render_template('faculty-profile.html')
+
+
+@app.route("/faculty/dashboard")
+def faculty_dash():
+    return render_template('faculty-dashboard.html')
+
+
+# COURSE
+@app.route("/faculty/courses")
+def faculty_course():
+    return render_template('faculty-courses.html')
+
+
+@app.route("/faculty/courses/add")
+def faculty_course_add():
+    return render_template("faculty-add-course.html")
+
+
+@app.route("/faculty/courses/add/section")
+def faculty_course_add_section():
+    return render_template("faculty-add-section.html")
+
+
+@app.route("/faculty/courses/add/section/content")
+def faculty_course_add_section_content():
+    return render_template("faculty-add-contents.html")
+
+
+# quiz
+@app.route("/faculty/quiz")
+def faculty_quiz():
+    return render_template('faculty-quiz.html')
+
+
+@app.route("/faculty/quiz/add")
+def faculty_quiz_add():
+    return render_template('faculty-add-quiz.html')
+
+
+@app.route("/faculty/quiz/add/qn")
+def faculty_quiz_add_qn():
+    return render_template('faculty-add-quiz-qn.html')
+
+
+@app.route("/faculty/stud")
+def faculty_stud():
+    return render_template('faculty-students.html')
+
+
+@app.route("/faculty/leaderboard")
+def faculty_leaderboard():
+    return render_template('faculty-leaderboard.html')
+
+
+# community
+@app.route("/faculty/community")
+def faculty_community():
+    return render_template('faculty-discussions.html')
+
+
+@app.route("/faculty/community/view")
+def faculty_community_view():
+    return render_template('faculty-discussions-view.html')
+
+
+@app.route("/faculty/community/ask")
+def faculty_community_ask():
+    return render_template('faculty-discussions-ask.html')
+
+
+@app.route("/faculty/ai")
+def faculty_gpt():
+    return render_template('faculty-ai.html')
 
 
 if __name__ == "__main__":
