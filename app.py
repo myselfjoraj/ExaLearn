@@ -94,7 +94,7 @@ def admin_login():
 
 @app.route("/admin/dashboard")
 def admin_dash():
-    return render_template('admin-dash.html')
+    return render_template('admin-dashboard.html')
 
 
 if __name__ == "__main__":
