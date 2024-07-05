@@ -16,3 +16,11 @@ class FirebaseHelper:
                 return False
         except Exception as e:
             return True
+
+    @staticmethod
+    def upload_file(bucket, file, folder_name, file_name):
+        blob = bucket.blob(f'{folder_name}/{file_name}.png')
+        blob.upload_from_file(file)
+        blob.make_public()
+        download_url = blob.public_url
+        return download_url

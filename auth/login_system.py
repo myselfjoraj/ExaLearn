@@ -1,6 +1,7 @@
 import requests
 from flask import session
 
+from dao.faculty_dao import FacultyDAO
 from helper.mail_sender import MailSender
 
 from misc.constants import *
@@ -17,6 +18,7 @@ class LoginSystem:
 
     def __init__(self, db):
         self.dao = UserDAO(db)
+        self.f_dao = FacultyDAO(db)
         self.crypt = Crypt()
 
     def register_user(self, user):
@@ -51,4 +53,11 @@ class LoginSystem:
         except Exception as e:
             print(e)
 
-
+    def register_faculty(self, user):
+        if user.email is not None and user.password is not None:
+            if self.f_dao.user_exists(user.email):
+                return ExceptControl(False, EMAIL_EXISTS)
+            else:
+                self.f_dao.create_user(user)
+                LoginSystem.send_verification(user.email, user.email_otp)
+                return ExceptControl(True, SUCCESS)

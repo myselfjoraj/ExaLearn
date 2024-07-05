@@ -1,11 +1,12 @@
 from flask import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import firebase_admin
-from firebase_admin import db
+from firebase_admin import db, storage
 from models.user import User
 from auth.login_system import LoginSystem
 import misc.cred as mKey
 from misc.extras import *
+from routes import faculty_routes
 
 app = Flask(__name__)
 app.secret_key = mKey.SECRET_KEY
@@ -14,8 +15,11 @@ cred = firebase_admin.credentials.Certificate('cloud_key.json')
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': mKey.DB_URL,
-    'storageURL': mKey.STORAGE_URL
+    'storageBucket': mKey.STORAGE_URL
 })
+
+# Get a reference to the storage service
+bucket = storage.bucket()
 
 # login manager initialization
 login_manager = LoginManager()
@@ -89,12 +93,26 @@ def load_user(user_id):
 
 @app.route("/faculty")
 def faculty_login():
-    return render_template('admin-login.html')
+    return render_template('faculty-login.html')
+
+
+@app.route("/faculty/register", methods=['GET','POST'])
+def faculty_register():
+    reg = faculty_routes.register(request, db, bucket)
+    if reg is None:
+        return render_template('faculty-signup.html')
+    else:
+        return render_template('faculty-signup.html')
 
 
 @app.route("/faculty/profile")
 def faculty_profile():
     return render_template('faculty-profile.html')
+
+
+@app.route("/faculty/my-profile")
+def faculty_my_profile():
+    return render_template('faculty-edit-profile.html')
 
 
 @app.route("/faculty/dashboard")

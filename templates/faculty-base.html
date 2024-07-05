@@ -179,7 +179,7 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <div class="dropdown-header"><strong>Account</strong></div>
                         <a class="dropdown-item"
-                           href="edit-account.html">Edit Account</a>
+                           href="{{ url_for('faculty_my_profile') }}">Edit Account</a>
                         <a class="dropdown-item"
                            href="login.html">Logout</a>
                     </div>
@@ -211,13 +211,13 @@
 
                 <!-- Sidebar Content -->
 
-                <a href="index.html"
+                <a href="{{url_for('faculty_dash')}}"
                    class="sidebar-brand sidebar-brand-dark bg-primary-pickled-bluewood">
 
                             <span class="avatar avatar-xl sidebar-brand-icon h-auto">
 
                                 <span class="avatar-title rounded bg-primary"><img
-                                        src="../static/images/illustration/student/128/white.svg"
+                                        src="/static/images/illustration/student/128/white.svg"
                                         class="img-fluid"
                                         alt="logo"/></span>
 
