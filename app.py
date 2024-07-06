@@ -7,6 +7,7 @@ from auth.login_system import LoginSystem
 import misc.cred as mKey
 from misc.extras import *
 from routes import faculty_routes
+from misc.constants import *
 
 app = Flask(__name__)
 app.secret_key = mKey.SECRET_KEY
@@ -91,16 +92,39 @@ def load_user(user_id):
 ''' FACULTY LINKS'''
 
 
-@app.route("/faculty")
+@app.route("/faculty", methods=['GET', 'POST'])
 def faculty_login():
+    msg = request.args.get('msg')
+    msg = msg.upper()
+    if msg is not None:
+        if msg == SUCCESS:
+            msg = "Account created successfully! Please login ."
+        elif msg == EMAIL_EXISTS:
+            msg = "Account with same email id exists! Please login or click forget password to generate a new password!"
+        return render_template('faculty-login.html', msg=msg)
     return render_template('faculty-login.html')
 
 
-@app.route("/faculty/register", methods=['GET','POST'])
+@app.route("/faculty/register", methods=['GET', 'POST'])
 def faculty_register():
-    reg = faculty_routes.register(request, db, bucket)
-    if reg is None:
+    f_reg = faculty_routes.register(request, db, bucket)
+    if f_reg is None:
         return render_template('faculty-signup.html')
+    elif f_reg.success and f_reg.message == SUCCESS:
+        return redirect("/faculty?msg=success")
+    elif not f_reg.success:
+        msg = None
+        if f_reg.message == EMPTY_FIELDS:
+            msg = "One or more fields are empty"
+        elif f_reg.message == INCORRECT_EMAIL:
+            msg = "Please enter a valid email address"
+        elif f_reg.message == PASSWORD_LENGTH_DOWN:
+            msg = "Please enter a password with more than eight characters"
+        elif f_reg.message == EMAIL_EXISTS:
+            return redirect("/faculty?msg=email_exists")
+        else:
+            msg = str(f_reg.message)
+        return render_template('faculty-signup.html', msg=msg)
     else:
         return render_template('faculty-signup.html')
 
