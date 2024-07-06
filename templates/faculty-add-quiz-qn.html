@@ -4,7 +4,7 @@
 {%block content%}
 
 {% block header %}
-<h1 hidden="hidden"> {% block title %} Add Section {% endblock %} </h1>
+<h1 hidden="hidden"> {% block title %} Add Question {% endblock %} </h1>
 {% endblock %}
 
 
@@ -44,58 +44,44 @@
                 </div>
                 <div class="card card-body">
 
-                    <div class="form-group">
-                        <label class="form-label">Question</label>
-                        <!-- <textarea class="form-control" rows="3" placeholder="Question"></textarea> -->
-                        <div style="height: 150px;"
-                             class="mb-0"
-                             data-toggle="quill"
-                             data-quill-placeholder="Question">
-                            An angular 2 project written in typescript is* transpiled to javascript duri*ng the build
-                            process. Which of the following additional features are provided to the developer while
-                            programming on typescript over javascript?
+                    <form id="quizForm" action="{{url_for('faculty_quiz_add_qn_submit')}}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Enter your question</label>
+                            <textarea class="form-control" rows="3" placeholder="Question" name="question"></textarea>
+<!--                            <div style="height: 150px;" class="mb-0" data-toggle="quill"-->
+<!--                                 data-quill-placeholder="Question"></div>-->
+                            <small class="form-text text-muted">Shortly describe the question.</small>
                         </div>
-                        <small class="form-text text-muted">Shortly describe the question.</small>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Course</label>
-                        <select name="category"
-                                class="form-control custom-select">
-                            <option value="vuejs">Multiple Answer</option>
-                            <option value="vuejs">Single Answer</option>
-                            <option value="vuejs">Essay</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Options</label>
-                        <input type="text" placeholder="Option 1"
-                               class="form-control"
-                               value="">
-                        <br>
-                        <input type="text" placeholder="Option 2"
-                               class="form-control"
-                               value="">
-                        <br>
-                        <input type="text" placeholder="Option 3"
-                               class="form-control"
-                               value="">
-                        <br>
-                        <input type="text" placeholder="Option 4"
-                               class="form-control"
-                               value="">
+                        <div class="form-group">
+                            <label class="form-label">Options</label>
+                            <input type="text" name="op_1" placeholder="Option 1" class="form-control" value=""><br>
+                            <input type="text" name="op_2" placeholder="Option 2" class="form-control" value=""><br>
+                            <input type="text" name="op_3" placeholder="Option 3" class="form-control" value=""><br>
+                            <input type="text" name="op_4" placeholder="Option 4" class="form-control" value="">
+                        </div>
 
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Completion Points</label>
-                        <input type="text"
-                               class="form-control"
-                               value="1000">
-                    </div>
-                    <div>
-                        <a href="#"
-                           class="btn btn-outline-secondary">Add Question</a>
-                    </div>
+                        <div class="form-group">
+                            <label class="form-label">Answer</label>
+                            <select name="answer" class="form-control custom-select">
+                                <option value="op_1">Option 1</option>
+                                <option value="op_2">Option 2</option>
+                                <option value="op_3">Option 3</option>
+                                <option value="op_4">Option 4</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Completion Points</label>
+                            <input type="text" name="points" class="form-control" value="1000">
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-outline-secondary">Add Question</button>
+                        </div>
+                    </form>
+
+
                 </div>
 
             </div>
@@ -104,12 +90,12 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <a href="#"
-                           class="btn btn-accent">Save changes</a>
+                           class="btn btn-accent">Create Qn</a>
                     </div>
                     <div class="list-group list-group-flush">
                         <div class="list-group-item">
                             <a href="#"
-                               class="text-danger"><strong>Delete Quiz</strong></a>
+                               class="text-danger"><strong>Cancel</strong></a>
                         </div>
                     </div>
                 </div>

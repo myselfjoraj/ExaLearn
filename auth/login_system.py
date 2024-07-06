@@ -9,6 +9,7 @@ from misc.constants import *
 from misc import email_verify
 from models.except_control import ExceptControl
 from dao.user_dao import UserDAO
+from models.faculty import Faculty
 from models.user import User
 from helper.crypt_helper import Crypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
@@ -61,3 +62,18 @@ class LoginSystem:
                 self.f_dao.create_user(user)
                 LoginSystem.send_verification(user.email, user.email_otp)
                 return ExceptControl(True, SUCCESS)
+
+    def login_faculty(self, email, password):
+        if email is not None and password is not None:
+            if not self.f_dao.user_exists(email):
+                return ExceptControl(False, USER_NOT_EXISTS)
+            else:
+                user_dict = self.f_dao.retrieve_user(email)
+                user = Faculty.from_dict(user_dict)
+                print(user_dict)
+                if user and self.crypt.encrypt(password) == user.password:
+                    print(self.crypt.encrypt(password))
+                    session['fac_dict'] = user_dict
+                    return ExceptControl(True, user)
+                else:
+                    return ExceptControl(False, PASSWORD_ERROR)

@@ -100,28 +100,29 @@
             </div>
 
             {% if msg %}
-
             <div class="alert alert-soft-success d-flex"
                  role="alert">
+                {% if err == 0 %}
                 <i class="material-icons mr-12pt">check_circle</i>
+                {% elif err == 1%}
+                <i class="material-icons mr-12pt" style="color:red">dangerous</i>
+                {% endif %}
                 <div class="text-body">{{msg}}</div>
             </div>
-
             {% endif %}
 
 
 
-            <form action="https://luma.humatheme.com/Demos/Learnly/index.html"
-                  novalidate>
+            <form action="/faculty" method="post">
                 <div class="form-group">
                     <label class="text-label"
                            for="email_2">Email Address:</label>
                     <div class="input-group input-group-merge">
                         <input id="email_2"
                                type="email"
-                               required=""
+                               name="email"
                                class="form-control form-control-prepended"
-                               placeholder="john@doe.com">
+                               placeholder="Enter your email address" required>
                         <div class="input-group-prepend">
                             <div class="input-group-text">
                                 <!-- -->
@@ -135,9 +136,9 @@
                     <div class="input-group input-group-merge">
                         <input id="password_2"
                                type="password"
-                               required=""
+                               name="password"
                                class="form-control form-control-prepended"
-                               placeholder="Enter your password">
+                               placeholder="Enter your password" required>
                         <div class="input-group-prepend">
                             <div class="input-group-text">
                                 <!-- -->
@@ -158,7 +159,7 @@
                     </div>
                 </div>
                 <div class="form-group text-center">
-                    <a href="#">Forgot password?</a> <br>
+                    <a href="{{url_for('faculty_forget_password')}}">Forgot password?</a> <br>
                     Don't have an account? <a class="text-body text-underline"
                        href="{{url_for('faculty_register')}}">Sign up!</a>
                 </div>
