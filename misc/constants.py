@@ -14,6 +14,3 @@ INCORRECT_EMAIL = "INCORRECT_EMAIL"
 
 SUCCESS = 'SUCCESS'
 
-
-def getUUID():
-    return str(uuid.uuid4()).replace("-", "")

@@ -37,13 +37,35 @@
         <div class="row align-items-start">
             <div class="col-md-8">
 
+
+                <label class="form-label">Quiz title</label>
+                <div class="form-group mb-24pt">
+
+                    {% if name is not none%}
+                           <input type="text"
+                           id="quiz-title"
+                           name="quiz-title"
+                           class="form-control form-control-lg"
+                           placeholder="Enter a title for quiz."
+                           value="{{name}}">
+                    {%else%}
+                    <input type="text"
+                           id="quiz-title"
+                           name="quiz-title"
+                           class="form-control form-control-lg"
+                           placeholder="Enter a title for quiz."
+                           value=" ">
+                    {% endif %}
+                </div>
+
                 <div class="page-separator">
                     <div class="page-separator__text">Questions</div>
                 </div>
 
                 {% if qn_list is none%}
 
-                <a href="#" class="chip chip-light d-inline-flex align-items-center"> Start adding questions for quiz.</a>
+                <a href="#" class="chip chip-light d-inline-flex align-items-center"> Start adding questions for
+                    quiz.</a>
                 <br><br><br>
 
                 {% else %}
@@ -104,47 +126,50 @@
 
                 <div class="card">
                     <div class="card-header text-center">
-                        <a href="#"
+                        <a href="{{url_for('faculty_quiz')}}"
                            class="btn btn-accent">Save changes</a>
                     </div>
                     <div class="list-group list-group-flush">
                         <div class="list-group-item">
-                            <a href="#"
+                            <a href="/faculty/quiz/delete?id={{id}}"
                                class="text-danger"><strong>Delete Quiz</strong></a>
                         </div>
                     </div>
                 </div>
 
-                <div class="page-separator">
-                    <div class="page-separator__text">Category</div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form-group mb-0">
-                            <label class="form-label">Add to category</label>
-                            <select name="course"
-                                    id="course"
-                                    data-toggle="select"
-                                    data-tags="false"
-                                    data-multiple="true"
-                                    data-minimum-results-for-search="0"
-                                    class="form-control"
-                                    data-placeholder="Select category ...">
-                                {% if category is not none%}
-                                {% for cat in category%}
-                                <option>
-                                    {{cat}}
-                                </option>
-                                {% endfor %}
-                                {% endif %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputBox = document.getElementById('quiz-title');
+
+        inputBox.addEventListener('input', function() {
+            const dataToSend = {
+                quiz_title: inputBox.value
+            };
+            console.log('data:', dataToSend);
+
+            fetch('/faculty/quiz/add/qn/submit/title', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Success:', data);
+            })
+                .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
 
 {% endblock %}

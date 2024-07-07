@@ -6,6 +6,8 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 import firebase_admin
 from firebase_admin import db, storage
 
+import misc.constants
+from misc import extras
 from models.faculty import Faculty
 from models.quiz import Quiz
 from models.user import User
@@ -190,31 +192,43 @@ def faculty_course_add_section_content():
 # quiz
 @app.route("/faculty/quiz")
 def faculty_quiz():
-    return render_template('faculty-quiz.html')
+    quiz_list = extras.quiz_iterator(MainDAO(db).quiz_list(current_user.email))
+    print(quiz_list)
+    return render_template('faculty-quiz.html', quiz_list=quiz_list)
 
 
 @app.route("/faculty/quiz/add")
 def faculty_quiz_add():
-    if 'new_quiz_list' in session:
-        qn_list = session['new_quiz_list']
-        session.pop('new_quiz_list')
+    is_new = request.args.get('new')
+    is_id = request.args.get('id')
+    if is_new == 'true':
+        session.pop("quiz_id")
+    elif is_new == 'false' and is_id is not None:
+        session['quiz_id'] = is_id
+
+    if 'quiz_id' not in session:
+        id = extras.getUUID()
+        session['quiz_id'] = id
     else:
-        qn_list = []
+        id = session['quiz_id']
     if 'new_quiz_model' in session:
         try:
             json_dict = json.loads(session['new_quiz_model'])
             session.pop('new_quiz_model')
             quiz = Quiz.from_dict(json_dict)
-            qn_list.append(quiz)
+            print(quiz.no)
+            MainDAO(db).quiz_qn_list_add(current_user.email, id, json_dict)
         except Exception as e:
             print(e)
 
-    session['new_quiz_list'] = qn_list
     category = MainDAO(db).category_list()
-    if len(qn_list) < 1:
-        qn_list = None
-
-    return render_template('faculty-add-quiz.html', category=category, qn_list=qn_list)
+    qn_list = Quiz.parse_quiz(MainDAO(db).quiz_qn_list(current_user.email, id))
+    name = None
+    if qn_list is not None and isinstance(qn_list[0], str):
+        name = qn_list[0]
+        del qn_list[0]
+    print(qn_list)
+    return render_template('faculty-add-quiz.html', category=category, qn_list=qn_list, name=name, id=id)
 
 
 @app.route("/faculty/quiz/add/qn")
@@ -226,7 +240,6 @@ def faculty_quiz_add_qn():
 def faculty_quiz_add_qn_submit():
     if request.method == 'POST':
         question = request.form.get('question')
-        category = request.form.get('category')
         op_1 = request.form.get('op_1')
         op_2 = request.form.get('op_2')
         op_3 = request.form.get('op_3')
@@ -242,12 +255,11 @@ def faculty_quiz_add_qn_submit():
         else:
             answer = op_4
 
-        quiz = Quiz(0, question, points, category, op_1, op_2, op_3, op_4, answer)
+        quiz = Quiz(0, question, points, op_1, op_2, op_3, op_4, answer)
 
         # Optionally, you can process or store the data here
         # For example, print it to the console
         print(f"Question: {question}")
-        print(f"Category: {category}")
         print(f"Option 1: {op_1}")
         print(f"Option 2: {op_2}")
         print(f"Option 3: {op_3}")
@@ -258,6 +270,40 @@ def faculty_quiz_add_qn_submit():
         session['new_quiz_model'] = json.dumps(quiz.to_dict())
 
         return redirect(url_for("faculty_quiz_add"))
+
+
+@app.route('/faculty/quiz/add/qn/submit/title', methods=['GET', 'POST'])
+def faculty_quiz_add_qn_submit_title():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            val = data.get('quiz_title')
+            print(val)
+            if val and 'quiz_id' in session:
+                MainDAO(db).quiz_qn_list_add_name(current_user.email, session['quiz_id'], val)
+                print(val)
+
+            return jsonify({'message': 'Quiz title received successfully'})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 400
+
+
+@app.route('/faculty/quiz/delete', methods=['GET', 'POST'])
+def faculty_quiz_delete():
+    id = request.args.get('id')
+    if id:
+        MainDAO(db).quiz_delete(current_user.email, id)
+        print("deleted successfully")
+    return redirect(url_for("faculty_quiz"))
+
+
+@app.route('/faculty/quiz/delete/qn', methods=['GET', 'POST'])
+def faculty_quiz_delete_qn():
+    id = request.args.get('id')
+    if id:
+        MainDAO(db).quiz_delete(current_user.email, id)
+        print("deleted successfully")
+    return redirect(url_for("faculty_quiz"))
 
 
 @app.route("/faculty/stud")
