@@ -176,6 +176,31 @@ def faculty_course():
 
 @app.route("/faculty/courses/add")
 def faculty_course_add():
+    is_new = request.args.get('new')
+    is_id = request.args.get('id')
+    if is_new == 'true':
+        session.pop("course_id")
+    elif is_new == 'false' and is_id is not None:
+        session['course_id'] = is_id
+
+    if 'course_id' not in session:
+        id = extras.getUUID()
+        session['course_id'] = id
+    else:
+        id = session['course_id']
+
+    if 'new_course_model' in session:
+        try:
+            json_dict = json.loads(session['new_course_model'])
+            session.pop('new_course_model')
+            quiz = Quiz.from_dict(json_dict)
+            print(quiz.no)
+            MainDAO(db).quiz_qn_list_add(current_user.email, id, json_dict)
+        except Exception as e:
+            print(e)
+
+
+
     return render_template("faculty-add-course.html")
 
 
