@@ -20,5 +20,5 @@ class Section:
         return cls(
             id=data['id'],
             title=data['title'],
-            content=data['content'],
+            content=data['content']
         )

@@ -28,6 +28,8 @@ class Quiz:
             'answer': self.answer
         }
 
+
+
     @classmethod
     def from_dict(cls, dict_data):
         """

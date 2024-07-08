@@ -13,6 +13,12 @@ class MainDAO:
     def category_list(self):
         return self.db.reference("/category").get()
 
+    def course_list(self):
+        return self.db.reference("/course").get()
+
+    def course_add_paid(self, course):
+        return self.db.reference('/course').child(course.id).set(course)
+
     def quiz_list(self, email):
         return self.db.reference("/faculties").child(email).child("quiz").get()
 
