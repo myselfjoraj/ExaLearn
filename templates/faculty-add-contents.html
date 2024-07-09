@@ -15,17 +15,7 @@
             <div class="mb-24pt mb-sm-0 mr-sm-24pt">
                 <h2 class="mb-0">Add / Edit Section</h2>
 
-                <ol class="breadcrumb p-0 m-0">
-                    <li class="breadcrumb-item"><a href="index.html">Course id</a></li>
-                    <li class="breadcrumb-item"><a href="index.html">snjijswnojwnsojwsnwoijs</a></li>
 
-                    <li class="breadcrumb-item active">
-
-                        sec1
-
-                    </li>
-
-                </ol>
 
             </div>
         </div>
@@ -38,41 +28,29 @@
     <div class="container-fluid page__container">
 
         <div class="row">
-            <div class="col-md-8">
 
+            <div class="col-md-8">
                 <div class="page-separator">
                     <div class="page-separator__text">Basic information</div>
                 </div>
 
                 <label class="form-label">Section title</label>
                 <div class="form-group mb-24pt">
-                    <input type="text"
-                           class="form-control form-control-lg"
-                           placeholder="Course title"
-                           value="Angular Fundamentals">
+                    <input type="text" id="courseTitle" class="form-control form-control-lg" placeholder="Course title"
+                           value="">
                 </div>
 
                 <div class="form-group mb-32pt">
                     <label class="form-label">Description</label>
-                    <!-- <textarea class="form-control" rows="3" placeholder="Course description"></textarea> -->
-                    <div style="height: 150px;"
-                         class="mb-0"
-                         data-toggle="quill"
-                         data-quill-placeholder="Course description">
-                        <h1>Hello World!</h1>
-                        <p>Some initial <strong>bold</strong> text</p>
-                        <p><br></p>
-                    </div>
+                    <textarea class="form-control" rows="3" placeholder="Enter a description"
+                              id="courseDesc"></textarea>
                 </div>
-
-
             </div>
-            <div class="col-md-4">
 
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-header text-center">
-                        <a href="#"
-                           class="btn btn-accent">Save Content</a>
+                        <a href="#" id="saveContentButton" class="btn btn-accent">Save Content</a>
                     </div>
                     <div class="list-group list-group-flush">
                         <div class="list-group-item">
@@ -82,7 +60,6 @@
                     </div>
                 </div>
 
-
                 <div class="page-separator">
                     <div class="page-separator__text">Video</div>
                 </div>
@@ -90,11 +67,10 @@
                 <div class="card">
                     <div class="card-body">
                         <label class="form-label">Attach Video</label>
-                        <input type="file" accept="video/*"/>
+                        <input type="file" id="videoFile" accept="video/*"/>
                         <small class="form-text text-muted">Upload a valid video File.</small>
                     </div>
                 </div>
-
 
                 <div class="page-separator">
                     <div class="page-separator__text">Options</div>
@@ -102,8 +78,6 @@
 
                 <div class="card">
                     <div class="card-body">
-
-
                         <div class="form-group">
                             <label class="form-label">Duration</label>
                             <div class="row">
@@ -111,23 +85,59 @@
                                     <div class="input-group form-inline">
                                         <span class="input-group-prepend"><span
                                                 class="input-group-text">Min</span></span>
-                                        <input type="text"
-                                               class="form-control"
-                                               value="24">
+                                        <input type="text" id="duration" class="form-control" value="">
                                     </div>
                                 </div>
                             </div>
                             <small class="form-text text-muted">Enter the time required for completion</small>
                         </div>
-
                     </div>
                 </div>
-
             </div>
+
         </div>
 
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('saveContentButton').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default action
+
+            // Get the values from the input fields
+            const courseTitle = document.getElementById('courseTitle').value;
+
+            const courseDescription = document.getElementById('courseDesc').value;
+
+            const duration = document.getElementById('duration').value;
+            const videoFileInput = document.getElementById('videoFile');
+            const videoFile = videoFileInput.files.length > 0 ? videoFileInput.files[0] : null;
+
+            // Log the values to the console (or handle them as needed)
+            console.log('Course Title:', courseTitle);
+            console.log('Course Description:', courseDescription);
+            console.log('Duration:', duration);
+            console.log('Video File:', videoFile);
+
+            // Encode values for URL
+        const params = new URLSearchParams({
+            courseTitle: courseTitle,
+            courseDescription: courseDescription,
+            duration: duration,
+            videoFile: videoFile
+        }).toString();
+
+            if (courseTitle.length < 1 | courseDescription.length < 1 | duration.length < 1 ){
+                alert('Please complete all fields')
+            }else{
+                window.location.href = "/faculty/courses/add/section" + '?' + params;
+            }
+
+
+        });
+    });
+</script>
 
 
 {% endblock %}

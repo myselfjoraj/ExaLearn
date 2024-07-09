@@ -180,8 +180,11 @@ def faculty_course_add():
     is_id = request.args.get('id')
     if is_new == 'true':
         session.pop("course_id")
+        session.pop('course_name')
     elif is_new == 'false' and is_id is not None:
         session['course_id'] = is_id
+
+    category = MainDAO(db).category_list()
 
     if 'course_id' not in session:
         id = extras.getUUID()
@@ -189,19 +192,53 @@ def faculty_course_add():
     else:
         id = session['course_id']
 
-    if 'new_course_model' in session:
+    if 'course_name' in session:
+        name = session['course_name']
+    else:
+        name = None
+
+    if 'course_desc' in session:
+        desc = session['course_desc']
+    else:
+        desc = None
+
+    if 'course_price' in session:
+        price = session['course_price']
+    else:
+        price = 0
+
+    if 'course_cat' in session:
+        cat = session['course_cat']
+    else:
+        cat = category[0]
+    print(cat)
+
+    return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category)
+
+
+@app.route('/faculty/courses/add/details', methods=['GET', 'POST'])
+def faculty_course_add_title():
+    if request.method == 'POST':
         try:
-            json_dict = json.loads(session['new_course_model'])
-            session.pop('new_course_model')
-            quiz = Quiz.from_dict(json_dict)
-            print(quiz.no)
-            MainDAO(db).quiz_qn_list_add(current_user.email, id, json_dict)
+            data = request.get_json()
+            title = data.get('course_title')
+            desc = data.get('course_desc')
+            cat = data.get('course_category')
+            price = data.get('course_price')
+
+            if 'course_id' in session:
+                if title is not None:
+                    session['course_name'] = title
+                if desc is not None:
+                    session['course_desc'] = desc
+                if price is not None:
+                    session['course_price'] = price
+                if cat is not None:
+                    session['course_cat'] = cat
+
+            return jsonify({'message': 'Course title received successfully'})
         except Exception as e:
-            print(e)
-
-
-
-    return render_template("faculty-add-course.html")
+            return jsonify({'error': str(e)}), 400
 
 
 @app.route("/faculty/courses/add/section")

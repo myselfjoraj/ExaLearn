@@ -45,24 +45,31 @@
 
                 <label class="form-label">Course title</label>
                 <div class="form-group mb-24pt">
-                    <input type="text"
+                    {% if name is not none%}
+                           <input type="text"
+                           id="course-title"
+                           name="course-title"
                            class="form-control form-control-lg"
                            placeholder="Course title"
-                           value="Angular Fundamentals">
-                    <small class="form-text text-muted">Please see our <a href="#">course title guideline</a></small>
+                           value="{{name}}">
+                    {%else%}
+                    <input type="text"
+                           id="course-title"
+                           name="course-title"
+                           class="form-control form-control-lg"
+                           placeholder="Course title"
+                           value=" ">
+                    {% endif %}
                 </div>
 
                 <div class="form-group mb-32pt">
                     <label class="form-label">Description</label>
-                    <!-- <textarea class="form-control" rows="3" placeholder="Course description"></textarea> -->
-                    <div style="height: 150px;"
-                         class="mb-0"
-                         data-toggle="quill"
-                         data-quill-placeholder="Course description">
-                        <h1>Hello World!</h1>
-                        <p>Some initial <strong>bold</strong> text</p>
-                        <p><br></p>
-                    </div>
+                    {% if desc is not none%}
+                     <textarea class="form-control" rows="3" placeholder="Course description" id="course-desc">{{desc}}</textarea>
+                    {%else%}
+                    <textarea class="form-control" rows="3" placeholder="Course description" id="course-desc"></textarea>
+                    {%endif%}
+
                     <small class="form-text text-muted">Shortly describe this course.</small>
                 </div>
 
@@ -185,11 +192,7 @@
                            class="btn btn-accent">Publish Course</a>
                     </div>
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex">
-                            <a class="flex"
-                               href="#"><strong>Save Draft</strong></a>
-                            <i class="material-icons text-muted">check</i>
-                        </div>
+
                         <div class="list-group-item">
                             <a href="#"
                                class="text-danger"><strong>Delete Course</strong></a>
@@ -204,22 +207,12 @@
                 <div class="card">
                     <div class="card-body">
                         <label class="form-label">Attach Image</label>
-                        <input type="file" accept="video/*"/>
+                        <input type="file" accept="image/*"/>
                         <small class="form-text text-muted">Upload a thumbnail of 600x600 pixels.</small>
                     </div>
                 </div>
 
-                <div class="page-separator">
-                    <div class="page-separator__text">Video</div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <label class="form-label">Attach Video</label>
-                        <input type="file" accept="video/*"/>
-                        <small class="form-text text-muted">Upload a valid video File.</small>
-                    </div>
-                </div>
 
 
                 <div class="page-separator">
@@ -230,11 +223,17 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="form-label">Category</label>
-                            <select name="category"
+                            <select name="category" id="category"
                                     class="form-control custom-select">
-                                <option value="vuejs">VueJs</option>
-                                <option value="vuejs">Angular</option>
-                                <option value="vuejs">React</option>
+                                {% if category is not none%}
+                                {%for cat1 in category%}
+                                {% if cat1 == 'cat'%}
+                                <option value="{{cat1}}" selected>{{cat1}}</option>
+                                {%else%}
+                                <option value="{{cat1}}">{{cat1}}</option>
+                                {%endif%}
+                                {%endfor%}
+                                {%endif%}
                             </select>
                             <small class="form-text text-muted">Select a category.</small>
                         </div>
@@ -246,27 +245,14 @@
                                         <span class="input-group-prepend"><span class="input-group-text">$</span></span>
                                         <input type="text"
                                                class="form-control"
-                                               value="24">
+                                               value="{{price}}" id="course-price">
                                     </div>
                                 </div>
                             </div>
                             <small class="form-text text-muted">Enter &dollar;0 for making the course free</small>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Duration</label>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="input-group form-inline">
-                                        <span class="input-group-prepend"><span
-                                                class="input-group-text">Hrs</span></span>
-                                        <input type="text"
-                                               class="form-control"
-                                               value="24">
-                                    </div>
-                                </div>
-                            </div>
-                            <small class="form-text text-muted">Enter the time required for completion</small>
-                        </div>
+
+
 
                     </div>
                 </div>
@@ -276,6 +262,67 @@
 
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleBox = document.getElementById('course-title');
+        const descBox = document.getElementById('course-desc');
+        const categoryBox = document.getElementById('category');
+        const priceBox = document.getElementById('course-price');
+
+        titleBox.addEventListener('input', function() {
+            const dataToSend = {
+                course_title: titleBox.value
+            };
+            console.log('data:', dataToSend);
+            toSession(dataToSend);
+        });
+
+        descBox.addEventListener('input', function() {
+            const dataToSend = {
+                course_desc: descBox.value
+            };
+            console.log('data:', dataToSend);
+            toSession(dataToSend);
+        });
+
+        priceBox.addEventListener('input', function() {
+            const dataToSend = {
+                course_price: priceBox.value
+            };
+            console.log('data:', dataToSend);
+            toSession(dataToSend);
+        });
+
+        categoryBox.addEventListener('click', function() {
+            const dataToSend = {
+                course_category: categoryBox.value
+            };
+            console.log('data:', dataToSend);
+            toSession(dataToSend);
+        });
+
+
+        function toSession(dataToSend){
+            fetch('/faculty/courses/add/details', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Success:', data);
+            })
+                .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+    });
+</script>
 
 
 {% endblock %}

@@ -16,7 +16,7 @@ class MainDAO:
     def course_list(self):
         return self.db.reference("/course").get()
 
-    def course_add_paid(self, course):
+    def course_add(self, course):
         return self.db.reference('/course').child(course.id).set(course)
 
     def quiz_list(self, email):
