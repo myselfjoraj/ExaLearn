@@ -8,8 +8,10 @@ from firebase_admin import db, storage
 
 import misc.constants
 from misc import extras
+from models.contents import Contents
 from models.faculty import Faculty
 from models.quiz import Quiz
+from models.section import Section
 from models.user import User
 from auth.login_system import LoginSystem
 import misc.cred as mKey
@@ -178,9 +180,15 @@ def faculty_course():
 def faculty_course_add():
     is_new = request.args.get('new')
     is_id = request.args.get('id')
+    section = request.args.get('list')
+    title = request.args.get('title')
     if is_new == 'true':
         session.pop("course_id")
         session.pop('course_name')
+        session.pop('course_desc')
+        session.pop('course_price')
+        session.pop('course_cat')
+        session.pop('section_list')
     elif is_new == 'false' and is_id is not None:
         session['course_id'] = is_id
 
@@ -213,7 +221,24 @@ def faculty_course_add():
         cat = category[0]
     print(cat)
 
-    return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category)
+    section_list = []
+    if 'section_list' in session:
+        section_list = session['section_list']
+
+    if section is not None:
+        section_model = Section(1, title, section).to_dict()
+        section_list.append(section_model)
+        session['section_list'] = section_list
+
+    display_list = []
+    for sec in section_list:
+        print(sec)
+
+    print(display_list)
+    print(len(display_list))
+
+    return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category,
+                           section_list=section_list)
 
 
 @app.route('/faculty/courses/add/details', methods=['GET', 'POST'])
@@ -243,7 +268,22 @@ def faculty_course_add_title():
 
 @app.route("/faculty/courses/add/section")
 def faculty_course_add_section():
-    return render_template("faculty-add-section.html")
+    title = request.args.get('courseTitle')
+    desc = request.args.get('courseDescription')
+    duration = request.args.get('duration')
+    url = request.args.get('videoFile')
+    is_new = request.args.get('new')
+    if is_new is not None and is_new == 'true':
+        session.pop('content_list')
+    content_list = []
+    if 'content_list' in session:
+        content_list = session['content_list']
+    if title is not None and desc is not None and duration is not None:
+        content = Contents(1, title, desc, duration, url).to_dict()
+        content_list.append(content)
+        session['content_list'] = content_list
+    print(content_list)
+    return render_template("faculty-add-section.html", content_list=content_list)
 
 
 @app.route("/faculty/courses/add/section/content")
