@@ -3,7 +3,7 @@ from flask import json
 
 class Contents:
 
-    def __init__(self, id, title, desc, duration, url):
+    def __init__(self, id, title, desc, duration, url=None):
         self.id = id
         self.title = title
         self.desc = desc

@@ -1,5 +1,6 @@
 import ast
 import json
+import pprint
 
 from flask import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -234,9 +235,10 @@ def faculty_course_add():
         session['section_list'] = section_list
 
     if quiz_title is not None and quiz_id is not None:
-        m = Contents(2, quiz_title, quiz_id, "30", "null").to_dict()
-        section_model = Section(2, quiz_title, json.dumps(m)).to_dict()
-        section_list.append(section_model)
+        m = Contents(2, quiz_title, quiz_id, "30").to_dict()
+        m = f'[{{"id": 2, "title": "{quiz_title}", "desc": "{quiz_id}", "duration": 30, "url": "url"}}]'
+        sec_model = Section(2, quiz_title, m).to_dict()
+        section_list.append(sec_model)
         session['section_list'] = section_list
 
     display_list = []
@@ -249,10 +251,11 @@ def faculty_course_add():
         for sec in section_list:
             s = Section.from_dict(sec)
             s.content = json.loads(s.content)
+            print(f"{type(s.content)}---{s.content}")
             display_list.append(s.to_dict())
 
     print(len(display_list))
-    print(display_list[-1])
+    #print(display_list[-1])
 
     return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category,
                            section_list=display_list)

@@ -111,14 +111,20 @@
                             <div class="accordion__menu-link">
                                 <a href="#" class="remove-item"><i class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
                                 <a class="flex" href="">{{ item['title'] }}</a>
-                                <span class="text-muted">{{ item['duration'] }} min</span>
+
+                                <span class="text-muted">{% if sec.id == 2 %}Quiz ID : {{item['desc']}}{%else%}{{ item['duration'] }} min{%endif%}</span>
+
                             </div>
 
                         </div>
                     {% endfor %}
                     <div class="accordion__menu open">
                         <div class="accordion__menu-link">
+                            {%if sec.id == 2%}
+                            <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}" style="color:red"><b>DELETE QUIZ</b></a>
+                            {%else%}
                             <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}" style="color:red"><b>DELETE SECTION</b></a>
+                            {%endif%}
                         </div>
                     </div>
                 </div>
