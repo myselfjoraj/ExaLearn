@@ -2,6 +2,8 @@ import random
 import re
 import uuid
 
+from flask import session
+
 from models.quiz import Quiz
 
 
@@ -26,6 +28,11 @@ def is_valid_email(email):
         return True
     else:
         return False
+
+
+def session_pop(id):
+    if id in session:
+        session.pop(id)
 
 
 def quiz_iterator(data):

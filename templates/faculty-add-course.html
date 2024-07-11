@@ -81,11 +81,9 @@
                      id="parent">
 
                     {%if section_list is not none%}
-
                     {%for sec in section_list%}
-
                     <div class="accordion__item open">
-                        <a href="#"
+                        <a href=""
                            class="accordion__toggle collapsed"
                            data-toggle="collapse"
                            data-target="#course-toc-4"
@@ -93,22 +91,22 @@
                             <span class="flex">{{sec.title}}</span>
                             <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
                         </a>
-                        {%for i in sec.content%}
+                        {%for item in sec.content%}
                         <div class="accordion__menu open"
                              id="course-toc-4">
 
                             <div class="accordion__menu-link">
-                                <i class="material-icons text-70 icon-16pt icon--left">drag_handle</i>
+                                <a href="#"><i class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
                                 <a class="flex"
-                                   href="student-lesson.html">{{i[0]}}</a>
-                                <span class="text-muted">04:23</span>
+                                   href="">{{item['title']}}</a>
+                                <span class="text-muted">{{item['duration']}} min</span>
                             </div>
 
                         </div>
                         {%endfor%}
                         <div class="accordion__menu open">
                             <div class="accordion__menu-link">
-                                <a class="flex" href="student-lesson.html"><b>EDIT SECTION</b></a>
+                                <a class="flex" href="student-lesson.html" style="color:red"><b>DELETE SECTION</b></a>
                             </div>
                         </div>
                     </div>
@@ -117,7 +115,7 @@
                     {%endif%}
                 </div>
 
-                <a href="{{ url_for('faculty_course_add_section') }}"
+                <a href="{{ url_for('faculty_course_add_section', new='true') }}"
                    class="btn btn-outline-secondary mb-24pt mb-sm-0">Add Section</a>
 
             </div>

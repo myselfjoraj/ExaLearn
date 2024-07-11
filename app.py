@@ -183,12 +183,12 @@ def faculty_course_add():
     section = request.args.get('list')
     title = request.args.get('title')
     if is_new == 'true':
-        session.pop("course_id")
-        session.pop('course_name')
-        session.pop('course_desc')
-        session.pop('course_price')
-        session.pop('course_cat')
-        session.pop('section_list')
+        extras.session_pop("course_id")
+        extras.session_pop('course_name')
+        extras.session_pop('course_desc')
+        extras.session_pop('course_price')
+        extras.session_pop('course_cat')
+        extras.session_pop('section_list')
     elif is_new == 'false' and is_id is not None:
         session['course_id'] = is_id
 
@@ -232,13 +232,16 @@ def faculty_course_add():
 
     display_list = []
     for sec in section_list:
-        print(sec)
+        s = Section.from_dict(sec)
+        s.content = json.loads(s.content)
+        display_list.append(s)
+        print(s.content)
 
     print(display_list)
     print(len(display_list))
 
     return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category,
-                           section_list=section_list)
+                           section_list=display_list)
 
 
 @app.route('/faculty/courses/add/details', methods=['GET', 'POST'])
@@ -274,7 +277,7 @@ def faculty_course_add_section():
     url = request.args.get('videoFile')
     is_new = request.args.get('new')
     if is_new is not None and is_new == 'true':
-        session.pop('content_list')
+        extras.session_pop('content_list')
     content_list = []
     if 'content_list' in session:
         content_list = session['content_list']
