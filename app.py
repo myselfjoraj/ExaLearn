@@ -182,6 +182,9 @@ def faculty_course_add():
     is_id = request.args.get('id')
     section = request.args.get('list')
     title = request.args.get('title')
+    refresh_list = request.args.get("refresh")
+    quiz_title = request.args.get('quiz_title')
+    quiz_id = request.args.get('quiz_id')
     if is_new == 'true':
         extras.session_pop("course_id")
         extras.session_pop('course_name')
@@ -230,15 +233,26 @@ def faculty_course_add():
         section_list.append(section_model)
         session['section_list'] = section_list
 
-    display_list = []
-    for sec in section_list:
-        s = Section.from_dict(sec)
-        s.content = json.loads(s.content)
-        display_list.append(s)
-        print(s.content)
+    if quiz_title is not None and quiz_id is not None:
+        m = Contents(2, quiz_title, quiz_id, "30", "null").to_dict()
+        section_model = Section(2, quiz_title, json.dumps(m)).to_dict()
+        section_list.append(section_model)
+        session['section_list'] = section_list
 
-    print(display_list)
+    display_list = []
+    if refresh_list is not None and len(refresh_list) > 0:
+        refresh_list = json.loads(refresh_list)
+        for ref in refresh_list:
+            r = Section.from_dict(ref)
+            display_list.append(r.to_dict())
+    else:
+        for sec in section_list:
+            s = Section.from_dict(sec)
+            s.content = json.loads(s.content)
+            display_list.append(s.to_dict())
+
     print(len(display_list))
+    print(display_list[-1])
 
     return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category,
                            section_list=display_list)
@@ -292,6 +306,12 @@ def faculty_course_add_section():
 @app.route("/faculty/courses/add/section/content")
 def faculty_course_add_section_content():
     return render_template("faculty-add-contents.html")
+
+
+@app.route("/faculty/courses/add/section/quiz")
+def faculty_course_add_section_quiz():
+    quiz_list = extras.quiz_iterator(MainDAO(db).quiz_list(current_user.email))
+    return render_template("faculty-add-course-quiz.html", quiz_list=quiz_list)
 
 
 # quiz

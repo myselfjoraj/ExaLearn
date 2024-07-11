@@ -7,6 +7,10 @@
 <h1 hidden="hidden"> {% block title %} Add Course {% endblock %} </h1>
 {% endblock %}
 
+<style>
+
+</style>
+
 
 <div class="pt-32pt">
     <div class="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
@@ -33,11 +37,18 @@
 </div>
 
 
+
 <div class="page-section border-bottom-2">
     <div class="container-fluid page__container">
 
         <div class="row">
             <div class="col-md-8">
+
+
+
+
+
+
 
                 <div class="page-separator">
                     <div class="page-separator__text">Basic information</div>
@@ -46,7 +57,7 @@
                 <label class="form-label">Course title</label>
                 <div class="form-group mb-24pt">
                     {% if name is not none%}
-                           <input type="text"
+                    <input type="text"
                            id="course-title"
                            name="course-title"
                            class="form-control form-control-lg"
@@ -65,9 +76,11 @@
                 <div class="form-group mb-32pt">
                     <label class="form-label">Description</label>
                     {% if desc is not none%}
-                     <textarea class="form-control" rows="3" placeholder="Course description" id="course-desc">{{desc}}</textarea>
+                    <textarea class="form-control" rows="3" placeholder="Course description"
+                              id="course-desc">{{desc}}</textarea>
                     {%else%}
-                    <textarea class="form-control" rows="3" placeholder="Course description" id="course-desc"></textarea>
+                    <textarea class="form-control" rows="3" placeholder="Course description"
+                              id="course-desc"></textarea>
                     {%endif%}
 
                     <small class="form-text text-muted">Shortly describe this course.</small>
@@ -80,43 +93,44 @@
                 <div class="accordion js-accordion accordion--boxed mb-24pt"
                      id="parent">
 
-                    {%if section_list is not none%}
-                    {%for sec in section_list%}
-                    <div class="accordion__item open">
-                        <a href=""
-                           class="accordion__toggle collapsed"
-                           data-toggle="collapse"
-                           data-target="#course-toc-4"
-                           data-parent="#parent">
-                            <span class="flex">{{sec.title}}</span>
-                            <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                        </a>
-                        {%for item in sec.content%}
-                        <div class="accordion__menu open"
-                             id="course-toc-4">
+                    <div id="section-list">
+                    {% if section_list is not none %}
+            {% for sec in section_list %}
+                <div class="accordion__item" id="section-{{ loop.index }}">
+                    <a href="#"
+                       class="accordion__toggle collapsed"
+                       data-toggle="collapse"
+                       data-target="#course-toc-{{ loop.index }}"
+                       data-parent="#parent">
+                        <span class="flex">{{ sec.title }}</span>
+                        <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                    </a>
+                    {% for item in sec.content %}
+                        <div class="accordion__menu open" id="course-toc-{{ loop.index }}">
 
                             <div class="accordion__menu-link">
-                                <a href="#"><i class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
-                                <a class="flex"
-                                   href="">{{item['title']}}</a>
-                                <span class="text-muted">{{item['duration']}} min</span>
+                                <a href="#" class="remove-item"><i class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
+                                <a class="flex" href="">{{ item['title'] }}</a>
+                                <span class="text-muted">{{ item['duration'] }} min</span>
                             </div>
 
                         </div>
-                        {%endfor%}
-                        <div class="accordion__menu open">
-                            <div class="accordion__menu-link">
-                                <a class="flex" href="student-lesson.html" style="color:red"><b>DELETE SECTION</b></a>
-                            </div>
+                    {% endfor %}
+                    <div class="accordion__menu open">
+                        <div class="accordion__menu-link">
+                            <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}" style="color:red"><b>DELETE SECTION</b></a>
                         </div>
                     </div>
-
-                    {%endfor%}
-                    {%endif%}
+                </div>
+            {% endfor %}
+        {% endif %}
+                        </div>
                 </div>
 
                 <a href="{{ url_for('faculty_course_add_section', new='true') }}"
                    class="btn btn-outline-secondary mb-24pt mb-sm-0">Add Section</a>
+                <a href="{{ url_for('faculty_course_add_section_quiz', new='true') }}"
+                   class="btn btn-outline-secondary mb-24pt mb-sm-0">Add Quiz</a>
 
             </div>
             <div class="col-md-4">
@@ -148,8 +162,6 @@
                 </div>
 
 
-
-
                 <div class="page-separator">
                     <div class="page-separator__text">Options</div>
                 </div>
@@ -162,7 +174,7 @@
                                     class="form-control custom-select">
                                 {% if category is not none%}
                                 {%for cat1 in category%}
-                                {% if cat1 == 'cat'%}
+                                {% if cat1 == cat%}
                                 <option value="{{cat1}}" selected>{{cat1}}</option>
                                 {%else%}
                                 <option value="{{cat1}}">{{cat1}}</option>
@@ -186,7 +198,6 @@
                             </div>
                             <small class="form-text text-muted">Enter &dollar;0 for making the course free</small>
                         </div>
-
 
 
                     </div>
@@ -230,13 +241,70 @@
             toSession(dataToSend);
         });
 
-        categoryBox.addEventListener('click', function() {
+        document.getElementById('category').addEventListener('change', function() {
             const dataToSend = {
-                course_category: categoryBox.value
+                course_category: this.value
             };
             console.log('data:', dataToSend);
             toSession(dataToSend);
         });
+
+        let section_list = {{ section_list | tojson | safe }};
+
+        document.querySelectorAll('.remove-item').forEach(function(itemLink) {
+                itemLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
+                    let itemIndex = event.target.closest('.accordion__menu').id;
+                    let idx = itemIndex.replace('course-toc-', '')
+                    console.log('index_pos', idx)
+                    deleteItem(sectionIndex - 1, idx - 1); // Adjust indices for JavaScript (0-based)
+                });
+            });
+
+            // Add event listener for deleting a section
+            document.querySelectorAll('.delete-section').forEach(function(sectionLink) {
+                sectionLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
+                    console.log('index_pos', sectionIndex)
+                    deleteSection(sectionIndex - 1); // Adjust index for JavaScript (0-based)
+                });
+            });
+
+
+        function deleteItem(sectionIndex, itemIndex) {
+    // Confirm deletion (optional)
+    if (confirm('Are you sure you want to delete this item?')) {
+        // Remove the item from section_list
+        section_list[sectionIndex].content.splice(itemIndex, 1);
+        // Update the UI
+        if (itemIndex == 0){
+            if (section_list[sectionIndex].content.length == 0){
+                section_list.splice(sectionIndex, 1);
+            }
+        }
+        refreshUI();
+    }
+}
+
+// Function to delete a section from section_list
+function deleteSection(sectionIndex) {
+    // Confirm deletion (optional)
+    if (confirm('Are you sure you want to delete this section? ')) {
+        // Remove the section from section_list
+        section_list.splice(sectionIndex, 1);
+        // Update the UI
+        refreshUI();
+    }
+}
+
+// Function to refresh the UI based on updated section_list
+function refreshUI() {
+    window.location.href = '/faculty/courses/add?refresh=' + encodeURIComponent(JSON.stringify(section_list))
+    console.log('list',encodeURIComponent(JSON.stringify(section_list)))
+}
+
 
 
         function toSession(dataToSend){
