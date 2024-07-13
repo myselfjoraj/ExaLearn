@@ -1,3 +1,4 @@
+import json
 import random
 import re
 import uuid
@@ -52,3 +53,18 @@ def quiz_iterator(data):
         list2 = [quiz_id, quiz_name, i, point]
         list1.append(list2)
     return list1
+
+
+def calculate_total_duration(section_list):
+    total_duration = 0
+    section_list = json.loads(section_list)
+    for section in section_list:
+        if isinstance(section, dict) and "content" in section:
+            for content_item in section["content"]:
+                if isinstance(content_item, dict) and "duration" in content_item:
+                    total_duration += int(content_item["duration"])
+                else:
+                    print(f"ignoring: {content_item}")
+        else:
+            print(f"ignoring: {section}")
+    return total_duration

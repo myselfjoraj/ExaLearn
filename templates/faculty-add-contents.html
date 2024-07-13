@@ -7,6 +7,25 @@
 <h1 hidden="hidden"> {% block title %} Add Contents {% endblock %} </h1>
 {% endblock %}
 
+<style>
+    .progress-circle {
+        width: 50px;
+        height: 50px;
+        border: 8px solid #d2d3d4;
+        border-top: 8px solid #4d5bf9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 
 <div class="pt-32pt">
     <div class="container-fluid page__container d-flex flex-column flex-md-row align-items-center text-center text-sm-left">
@@ -14,7 +33,6 @@
 
             <div class="mb-24pt mb-sm-0 mr-sm-24pt">
                 <h2 class="mb-0">Add / Edit Content</h2>
-
 
 
             </div>
@@ -51,6 +69,11 @@
                 <div class="card">
                     <div class="card-header text-center">
                         <a href="#" id="saveContentButton" class="btn btn-accent">Save Content</a>
+                        <a href="#" id="progress" class="btn btn-accent"
+                           style="background-color:white;border:none; display:none;">
+                            <div class="progress-circle"></div>
+                        </a>
+
                     </div>
                     <div class="list-group list-group-flush">
                         <div class="list-group-item">
@@ -114,24 +137,63 @@
             const videoFileInput = document.getElementById('videoFile');
             const videoFile = videoFileInput.files.length > 0 ? videoFileInput.files[0] : null;
 
+            var progress = document.getElementById('progress');
+            var save = document.getElementById('saveContentButton')
+
             // Log the values to the console (or handle them as needed)
             console.log('Course Title:', courseTitle);
             console.log('Course Description:', courseDescription);
             console.log('Duration:', duration);
             console.log('Video File:', videoFile);
 
-            // Encode values for URL
-        const params = new URLSearchParams({
-            courseTitle: courseTitle,
-            courseDescription: courseDescription,
-            duration: duration,
-            videoFile: videoFile
-        }).toString();
-
             if (courseTitle.length < 1 | courseDescription.length < 1 | duration.length < 1 ){
                 alert('Please complete all fields')
+            } else if (videoFile != null) {
+                const formData = new FormData();
+                formData.append('videoFile', videoFile);
+                console.log("started upload")
+                progress.style.display = 'inline-block';
+                save.style.display = 'none';
+                fetch('/video-upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                    console.log('Success:', data);
+                    progress.style.display = 'none';
+                    save.style.display = 'inline-block';
+                    const params = new URLSearchParams({
+                        courseTitle: courseTitle,
+                        courseDescription: courseDescription,
+                        duration: duration,
+                        videoFile: data.url
+                    }).toString();
+                    window.location.href = "/faculty/courses/add/section" + '?' + params;
+                    //document.getElementById('responseMessage').textContent = 'Upload successful!';
+                })
+                    .catch((error) => {
+                    console.error('Error:', error);
+                    progress.style.display = 'none';
+                    save.style.display = 'inline-block';
+                    alert('Something went wrong!');
+                    //document.getElementById('responseMessage').textContent = 'Upload failed.';
+                });
             }else{
-                window.location.href = "/faculty/courses/add/section" + '?' + params;
+
+                // Encode values for URL
+                const params = new URLSearchParams({
+                    courseTitle: courseTitle,
+                    courseDescription: courseDescription,
+                    duration: duration,
+                    videoFile: videoFile
+                }).toString();
+
+                if (courseTitle.length < 1 | courseDescription.length < 1 | duration.length < 1 ){
+                    alert('Please complete all fields')
+                }else{
+                    window.location.href = "/faculty/courses/add/section" + '?' + params;
+                }
             }
 
 

@@ -1,5 +1,9 @@
 import json
+import time
 import uuid
+
+from flask_login import current_user
+
 import misc.constants as const
 from firebase_admin import db
 from helper.firebase_helper import FirebaseHelper
@@ -16,8 +20,9 @@ class MainDAO:
     def course_list(self):
         return self.db.reference("/course").get()
 
-    def course_add(self, course):
-        return self.db.reference('/course').child(course.id).set(course)
+    def course_add(self,id, course):
+        self.db.reference('/faculties').child(current_user.email).child('course').child(id).set(time.time())
+        return self.db.reference('/course').child(id).set(course)
 
     def quiz_list(self, email):
         return self.db.reference("/faculties").child(email).child("quiz").get()

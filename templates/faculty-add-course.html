@@ -8,7 +8,23 @@
 {% endblock %}
 
 <style>
+    .progress-circle {
+        width: 50px;
+        height: 50px;
+        border: 8px solid #d2d3d4;
+        border-top: 8px solid #4d5bf9;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
 
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 
@@ -24,7 +40,7 @@
 
                     <li class="breadcrumb-item active">
 
-                        snjijswnojwnsojwsnwoijs
+                        {{id}}
 
                     </li>
 
@@ -37,17 +53,11 @@
 </div>
 
 
-
 <div class="page-section border-bottom-2">
     <div class="container-fluid page__container">
 
         <div class="row">
             <div class="col-md-8">
-
-
-
-
-
 
 
                 <div class="page-separator">
@@ -94,43 +104,46 @@
                      id="parent">
 
                     <div id="section-list">
-                    {% if section_list is not none %}
-            {% for sec in section_list %}
-                <div class="accordion__item" id="section-{{ loop.index }}">
-                    <a href="#"
-                       class="accordion__toggle collapsed"
-                       data-toggle="collapse"
-                       data-target="#course-toc-{{ loop.index }}"
-                       data-parent="#parent">
-                        <span class="flex">{{ sec.title }}</span>
-                        <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
-                    </a>
-                    {% for item in sec.content %}
-                        <div class="accordion__menu open" id="course-toc-{{ loop.index }}">
+                        {% if section_list is not none %}
+                        {% for sec in section_list %}
+                        <div class="accordion__item" id="section-{{ loop.index }}">
+                            <a href="#"
+                               class="accordion__toggle collapsed"
+                               data-toggle="collapse"
+                               data-target="#course-toc-{{ loop.index }}"
+                               data-parent="#parent">
+                                <span class="flex">{{ sec.title }}</span>
+                                <span class="accordion__toggle-icon material-icons">keyboard_arrow_down</span>
+                            </a>
+                            {% for item in sec.content %}
+                            <div class="accordion__menu open" id="course-toc-{{ loop.index }}">
 
-                            <div class="accordion__menu-link">
-                                <a href="#" class="remove-item"><i class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
-                                <a class="flex" href="">{{ item['title'] }}</a>
+                                <div class="accordion__menu-link">
+                                    <a href="#" class="remove-item"><i
+                                            class="material-icons text-70 icon-16pt icon--left" style="color:red">do_not_disturb_on</i></a>
+                                    <a class="flex" href="">{{ item['title'] }}</a>
 
-                                <span class="text-muted">{% if sec.id == 2 %}Quiz ID : {{item['desc']}}{%else%}{{ item['duration'] }} min{%endif%}</span>
+                                    <span class="text-muted">{% if sec.id == 2 %}QUIZ ID : {{item['desc']}}{%else%}{{ item['duration'] }} min{%endif%}</span>
+
+                                </div>
 
                             </div>
-
+                            {% endfor %}
+                            <div class="accordion__menu open">
+                                <div class="accordion__menu-link">
+                                    {%if sec.id == 2%}
+                                    <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}"
+                                       style="color:red"><b>DELETE QUIZ</b></a>
+                                    {%else%}
+                                    <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}"
+                                       style="color:red"><b>DELETE SECTION</b></a>
+                                    {%endif%}
+                                </div>
+                            </div>
                         </div>
-                    {% endfor %}
-                    <div class="accordion__menu open">
-                        <div class="accordion__menu-link">
-                            {%if sec.id == 2%}
-                            <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}" style="color:red"><b>DELETE QUIZ</b></a>
-                            {%else%}
-                            <a class="flex delete-section" href="#" data-section-id="{{ loop.index0 }}" style="color:red"><b>DELETE SECTION</b></a>
-                            {%endif%}
-                        </div>
+                        {% endfor %}
+                        {% endif %}
                     </div>
-                </div>
-            {% endfor %}
-        {% endif %}
-                        </div>
                 </div>
 
                 <a href="{{ url_for('faculty_course_add_section', new='true') }}"
@@ -143,8 +156,11 @@
 
                 <div class="card">
                     <div class="card-header text-center">
-                        <a href="#"
-                           class="btn btn-accent">Publish Course</a>
+                        <a href="#" id="save" class="btn btn-accent">Publish Course</a>
+                        <a href="#" id="progress" class="btn btn-accent"
+                           style="background-color:white;border:none; display:none;">
+                            <div class="progress-circle"></div>
+                        </a>
                     </div>
                     <div class="list-group list-group-flush">
 
@@ -162,7 +178,7 @@
                 <div class="card">
                     <div class="card-body">
                         <label class="form-label">Attach Image</label>
-                        <input type="file" accept="image/*"/>
+                        <input type="file" id="imageFile" accept="image/*"/>
                         <small class="form-text text-muted">Upload a thumbnail of 600x600 pixels.</small>
                     </div>
                 </div>
@@ -258,58 +274,82 @@
         let section_list = {{ section_list | tojson | safe }};
 
         document.querySelectorAll('.remove-item').forEach(function(itemLink) {
-                itemLink.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
-                    let itemIndex = event.target.closest('.accordion__menu').id;
-                    let idx = itemIndex.replace('course-toc-', '')
-                    console.log('index_pos', idx)
-                    deleteItem(sectionIndex - 1, idx - 1); // Adjust indices for JavaScript (0-based)
-                });
+            itemLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
+                let itemIndex = event.target.closest('.accordion__menu').id;
+                let idx = itemIndex.replace('course-toc-', '')
+                console.log('index_pos', idx)
+                deleteItem(sectionIndex - 1, idx - 1); // Adjust indices for JavaScript (0-based)
             });
+        });
 
-            // Add event listener for deleting a section
-            document.querySelectorAll('.delete-section').forEach(function(sectionLink) {
-                sectionLink.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
-                    console.log('index_pos', sectionIndex)
-                    deleteSection(sectionIndex - 1); // Adjust index for JavaScript (0-based)
-                });
+        // Add event listener for deleting a section
+        document.querySelectorAll('.delete-section').forEach(function(sectionLink) {
+            sectionLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                let sectionIndex = event.target.closest('.accordion__item').id.replace('section-', '');
+                console.log('index_pos', sectionIndex)
+                deleteSection(sectionIndex - 1); // Adjust index for JavaScript (0-based)
             });
+        });
+
+        var progress = document.getElementById('progress');
+        var save = document.getElementById('save')
+
+        save.addEventListener('click', function(event) {
+            event.preventDefault();
+            const titleBox = document.getElementById('course-title');
+            const descBox = document.getElementById('course-desc');
+            const priceBox = document.getElementById('course-price');
+            const imageFileInput = document.getElementById('imageFile');
+            const imageFile = imageFileInput.files.length > 0 ? imageFileInput.files[0] : null;
+            let section_list = {{ section_list | tojson | safe }};
+
+            if (titleBox.value.length < 1 | descBox.value.length < 1 | priceBox.value.length < 1){
+                alert("Please complete all fields!")
+            }else if (section_list.length < 1){
+                alert("Please add atleast one section!")
+            }else if (imageFile == null){
+                alert("Please add a thumbnail!")
+            }else{
+                uploadAndSave(imageFile, section_list)
+            }
+
+        });
 
 
         function deleteItem(sectionIndex, itemIndex) {
-    // Confirm deletion (optional)
-    if (confirm('Are you sure you want to delete this item?')) {
-        // Remove the item from section_list
-        section_list[sectionIndex].content.splice(itemIndex, 1);
-        // Update the UI
-        if (itemIndex == 0){
-            if (section_list[sectionIndex].content.length == 0){
-                section_list.splice(sectionIndex, 1);
+            // Confirm deletion (optional)
+            if (confirm('Are you sure you want to delete this item?')) {
+                // Remove the item from section_list
+                section_list[sectionIndex].content.splice(itemIndex, 1);
+                // Update the UI
+                if (itemIndex == 0){
+                    if (section_list[sectionIndex].content.length == 0){
+                        section_list.splice(sectionIndex, 1);
+                    }
+                }
+                refreshUI();
             }
         }
-        refreshUI();
-    }
-}
 
-// Function to delete a section from section_list
-function deleteSection(sectionIndex) {
-    // Confirm deletion (optional)
-    if (confirm('Are you sure you want to delete this section? ')) {
-        // Remove the section from section_list
-        section_list.splice(sectionIndex, 1);
-        // Update the UI
-        refreshUI();
-    }
-}
+        // Function to delete a section from section_list
+        function deleteSection(sectionIndex) {
+            // Confirm deletion (optional)
+            if (confirm('Are you sure you want to delete this section? ')) {
+                // Remove the section from section_list
+                section_list.splice(sectionIndex, 1);
+                // Update the UI
+                refreshUI();
+            }
+        }
 
-// Function to refresh the UI based on updated section_list
-function refreshUI() {
-    window.location.href = '/faculty/courses/add?refresh=' + encodeURIComponent(JSON.stringify(section_list))
-    console.log('list',encodeURIComponent(JSON.stringify(section_list)))
-}
+        // Function to refresh the UI based on updated section_list
+        function refreshUI() {
+            window.location.href = '/faculty/courses/add?refresh=' + encodeURIComponent(JSON.stringify(section_list))
+            console.log('list',encodeURIComponent(JSON.stringify(section_list)))
+        }
 
 
 
@@ -327,6 +367,52 @@ function refreshUI() {
             })
                 .catch((error) => {
                 console.error('Error:', error);
+            });
+        }
+
+        function uploadAndSave(file, section_list){
+            const formData = new FormData();
+            formData.append('imageFile', file);
+            console.log("started upload")
+            progress.style.display = 'inline-block';
+            save.style.display = 'none';
+            fetch('/thumb-upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Success:', data);
+                passToNext(data.url, section_list)
+            })
+                .catch((error) => {
+                console.error('Error:', error);
+                progress.style.display = 'none';
+                save.style.display = 'inline-block';
+                alert('Something went wrong!');
+            });
+        }
+
+        function passToNext(url, section_list){
+            const formData = new FormData();
+            formData.append('url', url);
+            formData.append('list', JSON.stringify(section_list));
+            fetch('/faculty/course/throw', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                console.log('Success:', data);
+                progress.style.display = 'none';
+                save.style.display = 'inline-block';
+                window.location.href = "/faculty/courses?msg=success"
+            })
+                .catch((error) => {
+                console.error('Error:', error);
+                progress.style.display = 'none';
+                save.style.display = 'inline-block';
+                alert('Something went wrong!');
             });
         }
 

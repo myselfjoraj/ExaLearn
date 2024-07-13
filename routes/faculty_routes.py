@@ -1,4 +1,6 @@
 from flask import render_template, redirect
+
+from faculty import faculty_course, faculty_quiz
 from misc.constants import *
 
 from routes import faculty_main
@@ -27,3 +29,29 @@ def faculty_register(request, db, bucket):
         return render_template('faculty-signup.html')
 
 
+def faculty_course_add(request, db):
+    return faculty_course.main(request, db)
+
+
+def faculty_course_throw(request, db):
+    return faculty_course.throw(request, db)
+
+
+def faculty_course_add_title(request):
+    return faculty_course.add_title(request)
+
+
+def faculty_course_add_section(request):
+    return faculty_course.add_section(request)
+
+
+def faculty_quiz_add(request, db):
+    return faculty_quiz.quiz_add(request, db)
+
+
+def faculty_quiz_add_qn_submit(request):
+    return faculty_quiz.qn_submit(request)
+
+
+def faculty_quiz_add_qn_submit_title(request, db):
+    return faculty_quiz.submit_title(request, db)

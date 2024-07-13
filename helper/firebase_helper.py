@@ -24,3 +24,11 @@ class FirebaseHelper:
         blob.make_public()
         download_url = blob.public_url
         return download_url
+
+    @staticmethod
+    def upload_video_file(bucket, file, folder_name, file_name):
+        blob = bucket.blob(f'{folder_name}/{file_name}.png')
+        blob.upload_from_file(file)
+        blob.make_public()
+        download_url = blob.public_url
+        return download_url

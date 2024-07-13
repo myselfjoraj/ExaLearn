@@ -1,11 +1,13 @@
 import ast
 import json
+import os
 import pprint
 
 from flask import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 import firebase_admin
 from firebase_admin import db, storage
+from werkzeug.utils import secure_filename
 
 import misc.constants
 from misc import extras
@@ -177,133 +179,24 @@ def faculty_course():
     return render_template('faculty-courses.html')
 
 
+@app.route("/faculty/course/throw", methods=['GET', 'POST'])
+def faculty_course_throw():
+    return faculty_routes.faculty_course_throw(request, db)
+
+
 @app.route("/faculty/courses/add")
 def faculty_course_add():
-    is_new = request.args.get('new')
-    is_id = request.args.get('id')
-    section = request.args.get('list')
-    title = request.args.get('title')
-    refresh_list = request.args.get("refresh")
-    quiz_title = request.args.get('quiz_title')
-    quiz_id = request.args.get('quiz_id')
-    if is_new == 'true':
-        extras.session_pop("course_id")
-        extras.session_pop('course_name')
-        extras.session_pop('course_desc')
-        extras.session_pop('course_price')
-        extras.session_pop('course_cat')
-        extras.session_pop('section_list')
-    elif is_new == 'false' and is_id is not None:
-        session['course_id'] = is_id
-
-    category = MainDAO(db).category_list()
-
-    if 'course_id' not in session:
-        id = extras.getUUID()
-        session['course_id'] = id
-    else:
-        id = session['course_id']
-
-    if 'course_name' in session:
-        name = session['course_name']
-    else:
-        name = None
-
-    if 'course_desc' in session:
-        desc = session['course_desc']
-    else:
-        desc = None
-
-    if 'course_price' in session:
-        price = session['course_price']
-    else:
-        price = 0
-
-    if 'course_cat' in session:
-        cat = session['course_cat']
-    else:
-        cat = category[0]
-    print(cat)
-
-    section_list = []
-    if 'section_list' in session:
-        section_list = session['section_list']
-
-    if section is not None:
-        section_model = Section(1, title, section).to_dict()
-        section_list.append(section_model)
-        session['section_list'] = section_list
-
-    if quiz_title is not None and quiz_id is not None:
-        m = Contents(2, quiz_title, quiz_id, "30").to_dict()
-        m = f'[{{"id": 2, "title": "{quiz_title}", "desc": "{quiz_id}", "duration": 30, "url": "url"}}]'
-        sec_model = Section(2, quiz_title, m).to_dict()
-        section_list.append(sec_model)
-        session['section_list'] = section_list
-
-    display_list = []
-    if refresh_list is not None and len(refresh_list) > 0:
-        refresh_list = json.loads(refresh_list)
-        for ref in refresh_list:
-            r = Section.from_dict(ref)
-            display_list.append(r.to_dict())
-    else:
-        for sec in section_list:
-            s = Section.from_dict(sec)
-            s.content = json.loads(s.content)
-            print(f"{type(s.content)}---{s.content}")
-            display_list.append(s.to_dict())
-
-    print(len(display_list))
-    #print(display_list[-1])
-
-    return render_template("faculty-add-course.html", name=name, desc=desc, price=price, cat=cat, category=category,
-                           section_list=display_list)
+    return faculty_routes.faculty_course_add(request, db)
 
 
 @app.route('/faculty/courses/add/details', methods=['GET', 'POST'])
 def faculty_course_add_title():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            title = data.get('course_title')
-            desc = data.get('course_desc')
-            cat = data.get('course_category')
-            price = data.get('course_price')
-
-            if 'course_id' in session:
-                if title is not None:
-                    session['course_name'] = title
-                if desc is not None:
-                    session['course_desc'] = desc
-                if price is not None:
-                    session['course_price'] = price
-                if cat is not None:
-                    session['course_cat'] = cat
-
-            return jsonify({'message': 'Course title received successfully'})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
+    return faculty_routes.faculty_course_add_title(request)
 
 
 @app.route("/faculty/courses/add/section")
 def faculty_course_add_section():
-    title = request.args.get('courseTitle')
-    desc = request.args.get('courseDescription')
-    duration = request.args.get('duration')
-    url = request.args.get('videoFile')
-    is_new = request.args.get('new')
-    if is_new is not None and is_new == 'true':
-        extras.session_pop('content_list')
-    content_list = []
-    if 'content_list' in session:
-        content_list = session['content_list']
-    if title is not None and desc is not None and duration is not None:
-        content = Contents(1, title, desc, duration, url).to_dict()
-        content_list.append(content)
-        session['content_list'] = content_list
-    print(content_list)
-    return render_template("faculty-add-section.html", content_list=content_list)
+    return faculty_routes.faculty_course_add_section(request)
 
 
 @app.route("/faculty/courses/add/section/content")
@@ -321,42 +214,12 @@ def faculty_course_add_section_quiz():
 @app.route("/faculty/quiz")
 def faculty_quiz():
     quiz_list = extras.quiz_iterator(MainDAO(db).quiz_list(current_user.email))
-    print(quiz_list)
     return render_template('faculty-quiz.html', quiz_list=quiz_list)
 
 
 @app.route("/faculty/quiz/add")
 def faculty_quiz_add():
-    is_new = request.args.get('new')
-    is_id = request.args.get('id')
-    if is_new == 'true':
-        session.pop("quiz_id")
-    elif is_new == 'false' and is_id is not None:
-        session['quiz_id'] = is_id
-
-    if 'quiz_id' not in session:
-        id = extras.getUUID()
-        session['quiz_id'] = id
-    else:
-        id = session['quiz_id']
-    if 'new_quiz_model' in session:
-        try:
-            json_dict = json.loads(session['new_quiz_model'])
-            session.pop('new_quiz_model')
-            quiz = Quiz.from_dict(json_dict)
-            print(quiz.no)
-            MainDAO(db).quiz_qn_list_add(current_user.email, id, json_dict)
-        except Exception as e:
-            print(e)
-
-    category = MainDAO(db).category_list()
-    qn_list = Quiz.parse_quiz(MainDAO(db).quiz_qn_list(current_user.email, id))
-    name = None
-    if qn_list is not None and isinstance(qn_list[0], str):
-        name = qn_list[0]
-        del qn_list[0]
-    print(qn_list)
-    return render_template('faculty-add-quiz.html', category=category, qn_list=qn_list, name=name, id=id)
+    return faculty_routes.faculty_quiz_add(request, db)
 
 
 @app.route("/faculty/quiz/add/qn")
@@ -366,54 +229,12 @@ def faculty_quiz_add_qn():
 
 @app.route('/faculty/quiz/add/qn/submit', methods=['GET', 'POST'])
 def faculty_quiz_add_qn_submit():
-    if request.method == 'POST':
-        question = request.form.get('question')
-        op_1 = request.form.get('op_1')
-        op_2 = request.form.get('op_2')
-        op_3 = request.form.get('op_3')
-        op_4 = request.form.get('op_4')
-        answer = request.form.get('answer')
-        points = request.form.get('points')
-        if answer == 'op_1':
-            answer = op_1
-        elif answer == 'op_2':
-            answer = op_2
-        elif answer == 'op_3':
-            answer = op_3
-        else:
-            answer = op_4
-
-        quiz = Quiz(0, question, points, op_1, op_2, op_3, op_4, answer)
-
-        # Optionally, you can process or store the data here
-        # For example, print it to the console
-        print(f"Question: {question}")
-        print(f"Option 1: {op_1}")
-        print(f"Option 2: {op_2}")
-        print(f"Option 3: {op_3}")
-        print(f"Option 4: {op_4}")
-        print(f"Answer: {answer}")
-        print(f"Points: {points}")
-
-        session['new_quiz_model'] = json.dumps(quiz.to_dict())
-
-        return redirect(url_for("faculty_quiz_add"))
+    return faculty_routes.faculty_quiz_add_qn_submit(request)
 
 
 @app.route('/faculty/quiz/add/qn/submit/title', methods=['GET', 'POST'])
 def faculty_quiz_add_qn_submit_title():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            val = data.get('quiz_title')
-            print(val)
-            if val and 'quiz_id' in session:
-                MainDAO(db).quiz_qn_list_add_name(current_user.email, session['quiz_id'], val)
-                print(val)
-
-            return jsonify({'message': 'Quiz title received successfully'})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 400
+    return faculty_routes.faculty_quiz_add_qn_submit_title(request, db)
 
 
 @app.route('/faculty/quiz/delete', methods=['GET', 'POST'])
@@ -463,6 +284,66 @@ def faculty_community_ask():
 @app.route("/faculty/ai")
 def faculty_gpt():
     return render_template('faculty-ai.html')
+
+
+@app.route("/video-upload", methods=['GET', 'POST'])
+def video_upload():
+    if 'videoFile' not in request.files:
+        return jsonify({'error': 'No video file part in the request'}), 400
+
+    video_file = request.files['videoFile']
+    if video_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    print("started process")
+    filename = secure_filename(video_file.filename)
+    file_path = os.path.join('/tmp', filename)
+    video_file.save(file_path)
+
+    if 'course_id' in session:
+        id = session['course_id']
+    else:
+        id = extras.getUUID()
+
+    folder_name = "courses/" + current_user.email + "/" + id
+
+    blob = bucket.blob(f'{folder_name}/{filename}')
+    blob.upload_from_filename(file_path)
+    blob.make_public()
+
+    print(blob.public_url)
+
+    return jsonify({'message': 'File uploaded successfully', 'url': blob.public_url}), 200
+
+
+@app.route("/thumb-upload", methods=['GET', 'POST'])
+def thumb_upload():
+    if 'imageFile' not in request.files:
+        return jsonify({'error': 'No video file part in the request'}), 400
+
+    image_file = request.files['imageFile']
+    if image_file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    print("started process")
+    filename = secure_filename(image_file.filename)
+    file_path = os.path.join('/tmp', filename)
+    image_file.save(file_path)
+
+    if 'course_id' in session:
+        id = session['course_id']
+    else:
+        id = extras.getUUID()
+
+    folder_name = "courses/" + current_user.email + "/" + id + "/thumb"
+
+    blob = bucket.blob(f'{folder_name}/{filename}')
+    blob.upload_from_filename(file_path)
+    blob.make_public()
+
+    print(blob.public_url)
+
+    return jsonify({'message': 'File uploaded successfully', 'url': blob.public_url}), 200
 
 
 if __name__ == "__main__":
