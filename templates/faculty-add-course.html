@@ -165,7 +165,7 @@
                     <div class="list-group list-group-flush">
 
                         <div class="list-group-item">
-                            <a href="#"
+                            <a href="" id="del-course"
                                class="text-danger"><strong>Delete Course</strong></a>
                         </div>
                     </div>
@@ -292,6 +292,13 @@
                 console.log('index_pos', sectionIndex)
                 deleteSection(sectionIndex - 1); // Adjust index for JavaScript (0-based)
             });
+        });
+
+        document.getElementById('del-course').addEventListener('click', function(event){
+            event.preventDefault();
+            if(confirm("Do You Really Want To Delete The Course?")){
+                window.location.href = "/faculty/courses"
+            }
         });
 
         var progress = document.getElementById('progress');

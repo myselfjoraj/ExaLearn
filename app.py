@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 import misc.constants
 from misc import extras
 from models.contents import Contents
+from models.course import Course
 from models.faculty import Faculty
 from models.quiz import Quiz
 from models.section import Section
@@ -176,7 +177,26 @@ def faculty_dash():
 # COURSE
 @app.route("/faculty/courses")
 def faculty_course():
-    return render_template('faculty-courses.html')
+    c_list = MainDAO(db).my_course_list()
+    course_list = []
+    for key, val in c_list.items():
+        k = key
+        course = Course.from_dict(MainDAO(db).course_list_by_id(k))
+        section = course.section
+        sections = []
+        for data in section:
+            sec = Section.from_dict(data)
+            contents = []
+            for con in sec.content:
+                cont = Contents.from_dict(con)
+                contents.append(cont)
+            sec.content = contents
+            sections.append(sec)
+        course.section = sections
+        course.duration = extras.convert_minutes_to_hours(course.duration)
+        course_list.append(course)
+
+    return render_template('faculty-courses.html', course_list =course_list)
 
 
 @app.route("/faculty/course/throw", methods=['GET', 'POST'])

@@ -20,7 +20,13 @@ class MainDAO:
     def course_list(self):
         return self.db.reference("/course").get()
 
-    def course_add(self,id, course):
+    def my_course_list(self):
+        return self.db.reference('/faculties').child(current_user.email).child('course').get()
+
+    def course_list_by_id(self,id):
+        return self.db.reference("/course").child(id).get()
+
+    def course_add(self, id, course):
         self.db.reference('/faculties').child(current_user.email).child('course').child(id).set(time.time())
         return self.db.reference('/course').child(id).set(course)
 
@@ -30,7 +36,7 @@ class MainDAO:
     def quiz_delete(self, email, id):
         return self.db.reference("/faculties").child(email).child("quiz").child(id).delete()
 
-    def quiz_qn_list(self,email, id):
+    def quiz_qn_list(self, email, id):
         return self.db.reference("/faculties").child(email).child("quiz").child(id).get()
 
     def quiz_qn_list_add(self, email, id, qn_list):
@@ -38,3 +44,4 @@ class MainDAO:
 
     def quiz_qn_list_add_name(self, email, id, name):
         return self.db.reference("/faculties").child(email).child("quiz").child(id).child("name").set(name)
+
