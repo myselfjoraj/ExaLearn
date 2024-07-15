@@ -5,7 +5,9 @@ import uuid
 
 from flask import session
 
+from models.contents import Contents
 from models.quiz import Quiz
+from models.section import Section
 
 
 def getUUID():
@@ -53,6 +55,22 @@ def quiz_iterator(data):
         list2 = [quiz_id, quiz_name, i, point]
         list1.append(list2)
     return list1
+
+
+def course_iterator(course):
+    section = course.section
+    sections = []
+    for data in section:
+        sec = Section.from_dict(data)
+        contents = []
+        for con in sec.content:
+            cont = Contents.from_dict(con)
+            contents.append(cont)
+        sec.content = contents
+        sections.append(sec)
+    course.section = sections
+    course.duration = convert_minutes_to_hours(course.duration)
+    return course
 
 
 def calculate_total_duration(section_list):

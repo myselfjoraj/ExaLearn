@@ -1,7 +1,9 @@
 from flask import render_template, redirect
 
+from dao.main_dao import MainDAO
 from faculty import faculty_course, faculty_quiz
 from misc.constants import *
+from models.course import Course
 
 from routes import faculty_main
 
@@ -27,6 +29,28 @@ def faculty_register(request, db, bucket):
         return render_template('faculty-signup.html', msg=msg)
     else:
         return render_template('faculty-signup.html')
+
+
+def faculty_course_list(request, db):
+    course_list = faculty_course.course_list(db)
+    free = []
+    paid = []
+    for c in course_list:
+        if str(c.price) == "0":
+            free.append(c)
+        else:
+            paid.append(c)
+    if len(free) == 0:
+        free = None
+    if len(paid) == 0:
+        paid = None
+    return render_template('faculty-courses.html', free=free, paid=paid)
+
+
+def faculty_course_edit(request, db):
+    id = request.args.get("id")
+    course = Course.from_dict(MainDAO(db).course_list_by_id(id))
+    return faculty_course.edit(request, db, course)
 
 
 def faculty_course_add(request, db):

@@ -177,9 +177,24 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <label class="form-label">Attach Image</label>
+                        {%if thumb is not none%}
+                        <img src="{{thumb}}"
+                             width="100"
+                             height="100"
+                             alt="Angular"
+                             class="rounded">
+                        <br><br>
+                        <label class="form-label">Replace Thumbnail</label>
+                        <input type="file" id="imageFile" accept="image/*"/>
+                        <small class="form-text text-muted">Upload another thumbnail of 600x600 pixels to replace the current one.</small>
+                        <input type="text" id="course-thumb" name="course-thumb" class="form-control form-control-lg"
+                           value="{{thumb}}" hidden="hidden">
+                        {%else%}
+                        <label class="form-label">Attach Thumbnail</label>
                         <input type="file" id="imageFile" accept="image/*"/>
                         <small class="form-text text-muted">Upload a thumbnail of 600x600 pixels.</small>
+                        {%endif%}
+
                     </div>
                 </div>
 
@@ -310,6 +325,7 @@
             const descBox = document.getElementById('course-desc');
             const priceBox = document.getElementById('course-price');
             const imageFileInput = document.getElementById('imageFile');
+            const thumb = document.getElementById('course-thumb');
             const imageFile = imageFileInput.files.length > 0 ? imageFileInput.files[0] : null;
             let section_list = {{ section_list | tojson | safe }};
 
@@ -318,7 +334,11 @@
             }else if (section_list.length < 1){
                 alert("Please add atleast one section!")
             }else if (imageFile == null){
-                alert("Please add a thumbnail!")
+                if (thumb.value.length > 1){
+                    passToNext(thumb.value, section_list)
+                }else{
+                    alert("Please add a thumbnail!")
+                }
             }else{
                 uploadAndSave(imageFile, section_list)
             }

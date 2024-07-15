@@ -47,16 +47,8 @@
     </div>
 
     <div class="row">
-            <h5 style="margin-top:50px; margin-bottom:50px;margin-left:10px;">No Free Courses Available!</h5>
-    </div>
-
-    <div class="page-separator">
-        <div class="page-separator__text">Paid Courses</div>
-    </div>
-
-    <div class="row">
-
-        {% for course in course_list%}
+        {% if free is not none%}
+        {% for course in free%}
 
         <div class="col-sm-6 col-md-4 col-xl-3">
 
@@ -138,7 +130,7 @@
 
                     </div>
                     <div class="col text-right">
-                        <a href="instructor-edit-course.html"
+                        <a href="{{url_for('faculty_course_edit',new='true',id=course.id)}}"
                            class="btn btn-primary">Edit course</a>
                     </div>
                 </div>
@@ -148,10 +140,116 @@
         </div>
 
         {% endfor %}
+        {%else%}
+        <h5 style="margin-top:50px; margin-bottom:50px;margin-left:10px;">No Free Courses Available!</h5>
+        {%endif%}
+    </div>
+
+    <div class="page-separator">
+        <div class="page-separator__text">Paid Courses</div>
+    </div>
+
+    <div class="row">
+        {%if paid is not none%}
+        {% for course in paid%}
+
+        <div class="col-sm-6 col-md-4 col-xl-3">
+
+            <div class="card card-sm card--elevated p-relative o-hidden overlay overlay--primary js-overlay mdk-reveal js-mdk-reveal "
+                 data-partial-height="44"
+                 data-toggle="popover"
+                 data-trigger="click">
+                <a href=""
+                   class="js-image"
+                   data-position="">
+                    <img src="{{course.thumbnail}}"
+                         alt="course" style="max-height:200px;max-width:200px;">
+                    <span class="overlay__content align-items-start justify-content-start">
+                                        <span class="overlay__action card-body d-flex align-items-center">
+                                            <i class="material-icons mr-4pt">edit</i>
+                                            <span class="card-title text-white">Edit</span>
+                                        </span>
+                                    </span>
+                </a>
+                <div class="mdk-reveal__content">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex">
+                                <a class="card-title mb-4pt"
+                                   href="instructor-edit-course.html">{{course.title}}</a>
+                            </div>
+                            <a href="instructor-edit-course.html"
+                               class="ml-4pt material-icons text-20 card-course__icon-favorite">edit</a>
+                        </div>
+                        <div class="d-flex">
+                            <div class="rating flex">
+                                <span class="rating__item"><span class="material-icons">star</span></span>
+                                <span class="rating__item"><span class="material-icons">star</span></span>
+                                <span class="rating__item"><span class="material-icons">star</span></span>
+                                <span class="rating__item"><span class="material-icons">star</span></span>
+                                <span class="rating__item"><span class="material-icons">star_border</span></span>
+                            </div>
+                            <small class="text-50">{{course.duration}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="popoverContainer d-none">
+                <div class="media">
+                    <div class="media-left mr-12pt">
+                        <img src="{{course.thumbnail}}"
+                             width="40"
+                             height="40"
+                             alt="Angular"
+                             class="rounded">
+                    </div>
+                    <div class="media-body">
+                        <div class="card-title mb-0">{{course.title}}</div>
+
+                    </div>
+                </div>
+
+                <p class="my-16pt text-70">{{course.description}}</p>
+
+                <div class="mb-16pt">
+                    {% for section in course.section%}
+                    <div class="d-flex align-items-center">
+                        <span class="material-icons icon-16pt text-50 mr-8pt">check</span>
+                        <p class="flex text-50 lh-1 mb-0"><small>{{section.title}}</small></p>
+                    </div>
+                    {%endfor%}
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center mb-4pt">
+                            <span class="material-icons icon-16pt text-50 mr-4pt">access_time</span>
+                            <p class="flex text-50 lh-1 mb-0"><small>{{ course.duration }}</small></p>
+                        </div>
+                        <div class="d-flex align-items-center mb-4pt">
+                            <span class="material-icons icon-16pt text-50 mr-4pt">play_circle_outline</span>
+                            <p class="flex text-50 lh-1 mb-0"><small>{{ course.section |length }} lessons</small></p>
+                        </div>
+
+                    </div>
+                    <div class="col text-right">
+                        <a href="{{url_for('faculty_course_edit',new='true',id=course.id)}}"
+                           class="btn btn-primary">Edit course</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+        {%else%}
+        <h5 style="margin-top:50px; margin-bottom:50px;margin-left:10px;">No Paid Courses Available!</h5>
+        {%endif%}
 
 
     </div>
 </div>
 
 
-    {% endblock %}
+{% endblock %}

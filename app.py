@@ -177,26 +177,12 @@ def faculty_dash():
 # COURSE
 @app.route("/faculty/courses")
 def faculty_course():
-    c_list = MainDAO(db).my_course_list()
-    course_list = []
-    for key, val in c_list.items():
-        k = key
-        course = Course.from_dict(MainDAO(db).course_list_by_id(k))
-        section = course.section
-        sections = []
-        for data in section:
-            sec = Section.from_dict(data)
-            contents = []
-            for con in sec.content:
-                cont = Contents.from_dict(con)
-                contents.append(cont)
-            sec.content = contents
-            sections.append(sec)
-        course.section = sections
-        course.duration = extras.convert_minutes_to_hours(course.duration)
-        course_list.append(course)
+    return faculty_routes.faculty_course_list(request, db)
 
-    return render_template('faculty-courses.html', course_list =course_list)
+
+@app.route("/faculty/courses/edit")
+def faculty_course_edit():
+    return faculty_routes.faculty_course_edit(request, db)
 
 
 @app.route("/faculty/course/throw", methods=['GET', 'POST'])
