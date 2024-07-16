@@ -9,7 +9,7 @@ from models.quiz import Quiz
 def quiz_add(request, db):
     is_new = request.args.get('new')
     is_id = request.args.get('id')
-    if is_new == 'true':
+    if is_new == 'true' and 'quiz_id' in session:
         session.pop("quiz_id")
     elif is_new == 'false' and is_id is not None:
         session['quiz_id'] = is_id

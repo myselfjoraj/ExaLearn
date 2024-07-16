@@ -59,5 +59,14 @@ class MainDAO:
     def community_qn_by_id(self, id):
         return self.db.reference('/community').child(id).get()
 
+    def community_comment_add(self, id, comment):
+        return self.db.reference('/community').child(id).child('comments').child(comment.id).set(comment.to_dict())
+
+    def user_list(self):
+        return self.db.reference('/users').get()
+
+    def faculty_list(self):
+        return self.db.reference('/faculties').get()
+
     def get_user_by_id(self, id):
         return self.db.reference('/users').child(id).get()

@@ -12,31 +12,32 @@
         <div class="page-separator__text">Basic Information</div>
     </div>
     <div class="col-md-6 p-0">
-        <form>
+        <form action="{{url_for('faculty_profile_edit')}}" method="post">
             <div class="form-group">
-                <label class="form-label">First name</label>
+                <label class="form-label">Profile Name</label>
                 <input type="text"
                        class="form-control"
-                       value="Alexander"
-                       placeholder="Your first name ...">
+                       value="{{user.display_name}}"
+                       name="name"
+                       placeholder="Your Profile Name ..." required>
             </div>
             <div class="form-group">
-                <label class="form-label">Last name</label>
+                <label class="form-label">Phone Number</label>
                 <input type="text"
                        class="form-control"
-                       value="Watson"
-                       placeholder="Your last name ...">
+                       value="{{user.phone_number}}"
+                       name="phone"
+                       placeholder="Your Phone Number ..." required>
             </div>
             <div class="form-group">
-                <label class="form-label">Email address</label>
-                <input type="email"
+                <label class="form-label">Password</label>
+                <input type="password"
                        class="form-control"
-                       value="alexander.watson@fake-mail.com"
-                       placeholder="Your email address ...">
-                <small class="form-text text-muted">Note that if you change your email, you will have to confirm it
-                    again.</small>
+                       value="{{user.password}}"
+                       name="password"
+                       placeholder="Your New Password ..." required>
             </div>
-            <button class="btn btn-primary">Save changes</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
         </form>
     </div>
 </div>

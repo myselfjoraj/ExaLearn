@@ -11,7 +11,10 @@ from firebase_admin import db, storage
 from werkzeug.utils import secure_filename
 
 import misc.constants
+from dao.user_dao import UserDAO
+from helper.crypt_helper import Crypt
 from misc import extras
+from models.comments import Comments
 from models.contents import Contents
 from models.course import Course
 from models.discussion import Discussion
@@ -166,14 +169,30 @@ def faculty_profile():
 
 @app.route("/faculty/my-profile")
 def faculty_my_profile():
-    return render_template('faculty-edit-profile.html')
+    user = User.from_dict(MainDAO(db).get_user_by_id(current_user.email))
+    return render_template('faculty-edit-profile.html', user=user)
+
+
+@app.route("/faculty/profile/edit", methods=['POST'])
+def faculty_profile_edit():
+    name = request.form['name']
+    phone = request.form['phone']
+    password = request.form['password']
+    UserDAO(db).update_name(current_user.email, name)
+    UserDAO(db).update_phone(current_user.email, phone)
+    UserDAO(db).update_password(current_user.email, Crypt().encrypt(password))
+    return redirect(url_for('faculty_dash'))
 
 
 @app.route("/faculty/dashboard")
 @login_required
 def faculty_dash():
-    print(MainDAO(db).category_list())
-    return render_template('faculty-dashboard.html', user=current_user, email=decode_email(current_user.email))
+    course_cnt = len(MainDAO(db).my_course_list())
+    quiz_cnt = len(MainDAO(db).quiz_list(current_user.email))
+    disc_cnt = len(MainDAO(db).community_my_qn_list())
+    user_cnt = len(MainDAO(db).user_list()) - len(MainDAO(db).faculty_list())
+    return render_template('faculty-dashboard.html', user=current_user, email=decode_email(current_user.email),
+                           course_cnt=course_cnt, quiz_cnt=quiz_cnt, disc_cnt=disc_cnt, user_cnt=user_cnt)
 
 
 # COURSE
@@ -299,13 +318,31 @@ def faculty_community():
             all_list.append(a)
     all_list = None if not all_list else all_list
     my_qn = None if not my_qn else my_qn
-    print(str(my_qn)+" --- "+str(all_list))
+    print(str(my_qn) + " --- " + str(all_list))
     return render_template('faculty-discussions.html', my_list=my_qn, all_list=all_list)
 
 
-@app.route("/faculty/community/view")
+@app.route("/faculty/community/view", methods=['GET', 'POST'])
 def faculty_community_view():
-    return render_template('faculty-discussions-view.html')
+    id = request.args.get('id')
+    q = MainDAO(db).community_qn_by_id(id)
+    discuss = None
+    if q is not None:
+        discuss = Discussion.from_dict(q)
+        discuss.time = extras.parse_timestamp(discuss.time)
+        discuss.ask = User.from_dict(MainDAO(db).get_user_by_id(discuss.ask))
+        comments = []
+        if discuss.comments is not None:
+            for com in discuss.comments:
+                com.user = User.from_dict(MainDAO(db).get_user_by_id(com.user))
+                comments.append(com)
+                com.time = extras.parse_timestamp(com.time)
+        discuss.comments = comments
+
+    if discuss is None:
+        return redirect('/faculty/community?msg=failed-discussion')
+
+    return render_template('faculty-discussions-view.html', m=discuss)
 
 
 @app.route("/faculty/community/ask")
@@ -323,6 +360,15 @@ def community_qn_submit():
         discuss = Discussion(extras.get_short_uuid(), title, desc, cat, current_user.email, time.time())
         MainDAO(db).community_qn_add(discuss)
         return redirect(url_for("faculty_community", msg='success'))
+
+
+@app.route('/community/comment/submit', methods=['GET', 'POST'])
+def community_comment_submit():
+    ans = request.form['comment']
+    id = request.form['id']
+    comment = Comments(extras.get_short_uuid(), ans, time.time(), current_user.email, True)
+    MainDAO(db).community_comment_add(id, comment)
+    return redirect(url_for('faculty_community_view', id=id))
 
 
 @app.route("/faculty/ai")

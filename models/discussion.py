@@ -1,3 +1,5 @@
+import json
+
 from models.comments import Comments
 
 
@@ -24,8 +26,11 @@ class Discussion:
 
     @classmethod
     def from_dict(cls, dict_data):
-        comments_data = dict_data.get('comments', [])
-        comments = [Comments.from_dict(comment_data) for comment_data in comments_data]
+        comments = []
+        if 'comments' in dict_data:
+            comments_data = dict_data['comments']
+            for key, val in comments_data.items():
+                comments.append(Comments.from_dict(val))
         return cls(
             dict_data['id'],
             dict_data['title'],

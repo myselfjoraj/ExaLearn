@@ -48,7 +48,7 @@
                         <div class="col-md-3 mb-8pt mb-md-0">
                             <div class="media align-items-center">
                                 <div class="media-left mr-12pt">
-                                    <a href="#"
+                                    <a href="{{url_for('faculty_community_view', id=m.id)}}"
                                        class="avatar avatar-sm">
                                         {%if m.ask.photo_url is not none%}
                                          <img src="{{m.ask.photo_url}}" alt="avatar" class="avatar-img rounded-circle">
@@ -58,7 +58,7 @@
                                     </a>
                                 </div>
                                 <div class="d-flex flex-column media-body media-middle">
-                                    <a href="#"
+                                    <a href="{{url_for('faculty_community_view', id=m.id)}}"
                                        class="card-title">{{m.ask.display_name}}</a>
                                     <small class="text-muted">{{m.time}}</small>
                                 </div>
@@ -66,7 +66,7 @@
                         </div>
                         <div class="col mb-8pt mb-md-0">
                             <p class="mb-8pt">
-                                <a href="{{url_for('faculty_community_view')}}" class="text-body">
+                                <a href="{{url_for('faculty_community_view', id=m.id)}}" class="text-body">
                                     <strong>{{m.desc}}</strong>
                                 </a></p>
 
@@ -115,7 +115,7 @@
                         <div class="col-md-3 mb-8pt mb-md-0">
                             <div class="media align-items-center">
                                 <div class="media-left mr-12pt">
-                                    <a href="#"
+                                    <a href="{{url_for('faculty_community_view', id=m.id)}}"
                                        class="avatar avatar-sm">
                                         {%if m.ask.photo_url is not none%}
                                          <img src="{{m.ask.photo_url}}" alt="avatar" class="avatar-img rounded-circle">
@@ -125,7 +125,7 @@
                                     </a>
                                 </div>
                                 <div class="d-flex flex-column media-body media-middle">
-                                    <a href="#"
+                                    <a href="{{url_for('faculty_community_view', id=m.id)}}"
                                        class="card-title">{{m.ask.display_name}}</a>
                                     <small class="text-muted">{{m.time}}</small>
                                 </div>
@@ -133,7 +133,7 @@
                         </div>
                         <div class="col mb-8pt mb-md-0">
                             <p class="mb-8pt">
-                                <a href="{{url_for('faculty_community_view')}}" class="text-body">
+                                <a href="{{url_for('faculty_community_view', id=m.id)}}" class="text-body">
                                     <strong>{{m.desc}}</strong>
                                 </a></p>
 
