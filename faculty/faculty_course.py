@@ -268,8 +268,9 @@ def throw(request, db):
         name = session['course_name']
         desc = session['course_desc']
         price = session['course_price']
-        cat = session['course_cat']
-        if not cat:
+        if 'course_cat' in session:
+            cat = session['course_cat']
+        else:
             cat = 'java'
         duration = extras.calculate_total_duration(s_list)
         course = Course(id, name, desc, cat, price, duration, url, json.loads(s_list), current_user.email, time.time())
@@ -280,8 +281,9 @@ def throw(request, db):
 def course_list(db):
     c_list = MainDAO(db).my_course_list()
     my_course_list = []
-    for key, val in c_list.items():
-        k = key
-        course = Course.from_dict(MainDAO(db).course_list_by_id(k))
-        my_course_list.append(extras.course_iterator(course))
+    if c_list is not None:
+        for key, val in c_list.items():
+            k = key
+            course = Course.from_dict(MainDAO(db).course_list_by_id(k))
+            my_course_list.append(extras.course_iterator(course))
     return my_course_list

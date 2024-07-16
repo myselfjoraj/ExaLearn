@@ -11,6 +11,7 @@ class Faculty(UserMixin):
         self.display_name = display_name
         self.phone_number = phone_number
         self.photo_url = photo_url
+        self.is_faculty = True
 
     def to_dict(self):
         user_dict = {
@@ -21,6 +22,7 @@ class Faculty(UserMixin):
             "display_name": self.display_name,
             "phone_number": self.phone_number,
             "photo_url": self.photo_url,
+            "is_faculty": self.is_faculty
         }
         return user_dict
 

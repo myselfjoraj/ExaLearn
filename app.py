@@ -2,6 +2,7 @@ import ast
 import json
 import os
 import pprint
+import time
 
 from flask import *
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -13,6 +14,7 @@ import misc.constants
 from misc import extras
 from models.contents import Contents
 from models.course import Course
+from models.discussion import Discussion
 from models.faculty import Faculty
 from models.quiz import Quiz
 from models.section import Section
@@ -274,7 +276,31 @@ def faculty_leaderboard():
 # community
 @app.route("/faculty/community")
 def faculty_community():
-    return render_template('faculty-discussions.html')
+    my_list = MainDAO(db).community_my_qn_list()
+    my_qn = []
+    if my_list is not None:
+        for key, val in my_list.items():
+            q = MainDAO(db).community_qn_by_id(key)
+            if q is not None:
+                discuss = Discussion.from_dict(q)
+                discuss.time = extras.parse_timestamp(discuss.time)
+                discuss.ask = User.from_dict(MainDAO(db).get_user_by_id(discuss.ask))
+                if discuss.comments is None:
+                    discuss.comments = []
+                my_qn.append(discuss)
+    all_list = []
+    db_list = MainDAO(db).community_qn_list()
+    if db_list is not None:
+        for key, value in db_list.items():
+            a = Discussion.from_dict(value)
+            a.time = extras.parse_timestamp(a.time)
+            a.ask = User.from_dict(MainDAO(db).get_user_by_id(a.ask))
+            # if str(a.ask) is not str(current_user.email):
+            all_list.append(a)
+    all_list = None if not all_list else all_list
+    my_qn = None if not my_qn else my_qn
+    print(str(my_qn)+" --- "+str(all_list))
+    return render_template('faculty-discussions.html', my_list=my_qn, all_list=all_list)
 
 
 @app.route("/faculty/community/view")
@@ -284,7 +310,19 @@ def faculty_community_view():
 
 @app.route("/faculty/community/ask")
 def faculty_community_ask():
-    return render_template('faculty-discussions-ask.html')
+    cat = MainDAO(db).category_list()
+    return render_template('faculty-discussions-ask.html', cat=cat)
+
+
+@app.route('/community/qn/submit', methods=['GET', 'POST'])
+def community_qn_submit():
+    if request.method == 'POST':
+        title = request.form['title']
+        desc = request.form['desc']
+        cat = request.form['category']
+        discuss = Discussion(extras.get_short_uuid(), title, desc, cat, current_user.email, time.time())
+        MainDAO(db).community_qn_add(discuss)
+        return redirect(url_for("faculty_community", msg='success'))
 
 
 @app.route("/faculty/ai")

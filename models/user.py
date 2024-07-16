@@ -3,7 +3,7 @@ from flask_login import UserMixin
 
 class User(UserMixin):
     def __init__(self, email=None, password=None, display_name=None, email_verified=False,email_otp=None, phone_number=None,
-                 photo_url=None):
+                 photo_url=None, is_faculty=False):
         self.email = email
         self.password = password
         self.email_verified = email_verified
@@ -11,6 +11,7 @@ class User(UserMixin):
         self.display_name = display_name
         self.phone_number = phone_number
         self.photo_url = photo_url
+        self.is_faculty = is_faculty
 
     def to_dict(self):
         user_dict = {
@@ -21,6 +22,7 @@ class User(UserMixin):
             "display_name": self.display_name,
             "phone_number": self.phone_number,
             "photo_url": self.photo_url,
+            "is_faculty": self.is_faculty,
         }
         return user_dict
 

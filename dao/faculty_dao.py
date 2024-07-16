@@ -13,13 +13,13 @@ class FacultyDAO:
     def create_user(self, user):
         email = user.email
         user = user.to_dict()
-        self.db.reference("/users").child("faculties").child(email).set(user)
+        self.db.reference("/users").child(email).set(user)
 
     def update_password(self, email, password):
-        self.db.reference("/users").child("faculties").child(email).child("password").set(password)
+        self.db.reference("/users").child(email).child("password").set(password)
 
     def user_exists(self, email):
-        return FirebaseHelper(self.db).check_child_exists("/users/faculties/"+email)
+        return FirebaseHelper(self.db).check_child_exists("/users/"+email)
 
     def retrieve_user(self, email):
-        return self.db.reference("/users/faculties").child(email).get()
+        return self.db.reference("/users").child(email).get()

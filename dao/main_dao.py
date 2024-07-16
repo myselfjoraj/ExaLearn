@@ -23,7 +23,7 @@ class MainDAO:
     def my_course_list(self):
         return self.db.reference('/faculties').child(current_user.email).child('course').get()
 
-    def course_list_by_id(self,id):
+    def course_list_by_id(self, id):
         return self.db.reference("/course").child(id).get()
 
     def course_add(self, id, course):
@@ -45,3 +45,19 @@ class MainDAO:
     def quiz_qn_list_add_name(self, email, id, name):
         return self.db.reference("/faculties").child(email).child("quiz").child(id).child("name").set(name)
 
+    def community_qn_add(self, discussion):
+        self.db.reference('/faculties').child(current_user.email).child('community').child(discussion.id).set(
+            time.time())
+        return self.db.reference('/community').child(discussion.id).set(discussion.to_dict())
+
+    def community_my_qn_list(self):
+        return self.db.reference('/faculties').child(current_user.email).child('community').get()
+
+    def community_qn_list(self):
+        return self.db.reference('/community').get()
+
+    def community_qn_by_id(self, id):
+        return self.db.reference('/community').child(id).get()
+
+    def get_user_by_id(self, id):
+        return self.db.reference('/users').child(id).get()

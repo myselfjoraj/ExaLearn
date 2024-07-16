@@ -2,6 +2,7 @@ import json
 import random
 import re
 import uuid
+from datetime import datetime
 
 from flask import session
 
@@ -12,6 +13,13 @@ from models.section import Section
 
 def getUUID():
     return str(uuid.uuid4()).replace("-", "")
+
+
+def get_short_uuid():
+    full_uuid = uuid.uuid4()
+    uuid_hex = full_uuid.hex
+    short_uuid = uuid_hex[:7]
+    return short_uuid
 
 
 def encode_email(email):
@@ -40,6 +48,8 @@ def session_pop(id):
 
 def quiz_iterator(data):
     list1 = []
+    if data is None:
+        return list1
     for quiz_id, quiz_data in data.items():
         quiz_name = quiz_data.get('name')
         if quiz_name is None:
@@ -95,3 +105,9 @@ def convert_minutes_to_hours(minutes):
     remaining_minutes = minutes % 60
 
     return f"{hours} h {remaining_minutes} min"
+
+
+def parse_timestamp(timestamp):
+    dt_object = datetime.fromtimestamp(timestamp)
+    formatted_date = dt_object.strftime('%d %b %Y')  # dd MMM yyyy
+    return formatted_date
